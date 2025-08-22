@@ -97,10 +97,6 @@ function changeQty(code, delta){
   persistCart();
   updateCartUI();
 }
-  persistCart();
-  updateCartUI();
-}
-
 
 function updateCartUI(){
   // cart UI removed; nothing to update here
