@@ -56,18 +56,23 @@ function bindKeypad(){
   });
 }
 
+
 function addToCart(code, qty=1){
   const product = PRODUCTS.find(p=>p.code===code);
   if(!product){ toast('Unknown code'); return; }
   const item = cart.get(code) || {product, qty:0};
   item.qty += qty;
   cart.set(code, item);
+
   // animation from slot
-  const slot = [...document.querySelectorAll('.slot .code')].find(el=>el.textContent===code);
+  const slot = [...document.querySelectorAll('.slot .code')]
+    .find(el => el.textContent === code);
   if(slot){ runDropAnimation(slot.closest('.slot'), product); }
+
   persistCart();
   trayAddOrUpdate(code);
 }
+
 
 function removeFromCart(code){
   cart.delete(code);
@@ -84,10 +89,11 @@ function changeQty(code, delta){
   updateCartUI();
 }
 
-function updateCartUI(){ /* cart UI removed */ }
-  totalEl.textContent = '$' + total.toFixed(2);
-  document.getElementById('checkout-btn').disabled = total<=0;
+
+function updateCartUI(){
+  // cart UI removed; nothing to update here
 }
+
 
 function persistCart(){
   const obj = Array.from(cart.values()).map(x=>({code:x.product.code, name:x.product.name, series:x.product.series, price:x.product.price, qty:x.qty}));
