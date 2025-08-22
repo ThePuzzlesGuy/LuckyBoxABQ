@@ -180,13 +180,24 @@ function setupRestockTarget(){
   });
 }
 
-/* payment logos open drawer */
+/* payment logos open drawer + close controls */
 document.addEventListener('click', (e)=>{
+  // payment logo clicked
   const btn = e.target.closest('.logo-pill');
   if(btn){
+    if(cart.size === 0){
+      alert('Add at least one item to the tray first.');
+      return;
+    }
     const glow = document.querySelector('.reader-glow');
     if(glow){ glow.animate([{opacity:1},{opacity:.2},{opacity:1}], {duration:400}); }
     openDrawer();
+    return;
+  }
+  // close by X or backdrop
+  if(e.target.closest('.close') || (e.target.classList && e.target.classList.contains('drawer'))){
+    closeDrawer();
+    return;
   }
 });
 

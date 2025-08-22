@@ -13,6 +13,7 @@
     <img src="logo.svg" alt="Lucky Box logo"/>
     <div class="brand">LUCKY BOX</div>
     <div class="spacer"></div>
+    <div class="pill">Inside Talin Market • Open & Vending</div>
   </header>
 
   <main class="container">
@@ -71,7 +72,7 @@
     <div class="sheet">
       <button class="close" aria-label="Close">✕</button>
       <h2>Checkout</h2>
-      <p>Enter your info and submit your order request. We'll text or email you when it's ready for pickup or delivery options.</p>
+      <p>Enter your info for delivery. We’ll reach out if we need anything else and confirm drop-off timing.</p>
 
       <!-- Netlify form -->
       <form name="order" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="form" action="/thanks.html">
@@ -86,13 +87,16 @@
         </div>
 
         <div class="row">
-          <p><label>Phone (for pickup)<br/><input type="tel" name="phone"/></label></p>
-          <p><label>Pickup or Delivery?<br/>
-            <select name="fulfillment" required>
-              <option value="pickup" selected>Pickup at Talin Market</option>
-              <option value="delivery">Local delivery (we'll confirm)</option>
-            </select>
-          </label></p>
+          <p><label>Phone (for delivery)<br/><input type="tel" name="phone"/></label></p>
+          <p><label>Address Line 1<br/><input type="text" name="address1" required/></label></p>
+        </div>
+        <div class="row">
+          <p><label>Address Line 2 (optional)<br/><input type="text" name="address2"/></label></p>
+          <p><label>City<br/><input type="text" name="city" required/></label></p>
+        </div>
+        <div class="row">
+          <p><label>State<br/><input type="text" name="state" required/></label></p>
+          <p><label>ZIP Code<br/><input type="text" name="zip" required/></label></p>
         </div>
 
         <p><label>Notes (optional)<br/><textarea name="notes" rows="3" placeholder="Any preferences or special requests?"></textarea></label></p>
