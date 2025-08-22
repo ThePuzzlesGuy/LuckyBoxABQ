@@ -309,3 +309,14 @@ input, textarea, select{
   }
 }
 
+
+.reader-total{
+  margin-top:10px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:8px;
+  color:#c8d2e3;
+  font-weight:700;
+}
+.reader-total strong{ font-weight:900; color:#ffffff }

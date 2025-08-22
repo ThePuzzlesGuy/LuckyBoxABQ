@@ -5,7 +5,8 @@ async function init(){
   PRODUCTS = await fetch('products.json').then(r=>r.json());
   renderGrid(PRODUCTS);
   restoreCart();
-  for(const [code] of cart){ trayAddOrUpdate(code); }
+  for(const [code] of cart){ trayAddOrUpdate(code);
+    renderTotal(); }
   bindKeypad();
   setupRestockTarget();
 }
@@ -69,6 +70,7 @@ function addToCart(code, qty=1){
 
   persistCart();
   trayAddOrUpdate(code);
+    renderTotal();
 }
 
 function removeFromCart(code){
@@ -77,6 +79,7 @@ function removeFromCart(code){
   if(el) el.remove();
   persistCart();
   updateCartUI();
+    renderTotal();
 }
 
 function changeQty(code, delta){
@@ -89,9 +92,11 @@ function changeQty(code, delta){
     if(el) el.remove();
   }else{
     trayAddOrUpdate(code);
+    renderTotal();
   }
   persistCart();
   updateCartUI();
+    renderTotal();
 }
 
 function updateCartUI(){
@@ -200,6 +205,17 @@ document.addEventListener('click', (e)=>{
     return;
   }
 });
+
+
+function computeTotal(){
+  let t = 0;
+  for(const [, item] of cart){ t += item.product.price * item.qty; }
+  return t;
+}
+function renderTotal(){
+  const el = document.getElementById('reader-total');
+  if(el){ el.textContent = '$' + computeTotal().toFixed(2); }
+}
 
 // Override openDrawer to compute totals from tray/cart
 function openDrawer(){
