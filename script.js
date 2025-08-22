@@ -26,9 +26,7 @@ function renderGrid(list){
           <div class="code">${p.code}</div>
         </div>
       </div>
-      <button class="add" aria-label="Add ${escapeHTML(p.name)}">＋</button>
     `;
-    div.querySelector('.add').addEventListener('click', ()=> addToCart(p.code, 1));
     grid.appendChild(div);
   });
 }
