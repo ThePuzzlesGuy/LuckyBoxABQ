@@ -1,8 +1,8 @@
 :root{
-  --bg:#111216;
-  --panel:#1b1e24;
-  --accent:#ffcf4d;
-  --accent-2:#ff9f1c;
+  --bg:#bd7dcf;
+  --panel:#141922;
+  --accent:#ffffff;
+  --accent-2:#ebbe2d;
   --text:#f7f7f7;
   --muted:#b9c0cf;
   --good:#20c997;
@@ -44,7 +44,7 @@ a{color:inherit}
 
 /* Cabinet */
 .cabinet{
-  background:linear-gradient(180deg, #f6c744, #e6a315 60%, #ce8d07);
+  background:linear-gradient(180deg, var(--accent), var(--accent-2) 60%, #b57406);
   border-radius:20px; padding:18px; box-shadow:0 14px 40px rgba(0,0,0,.35), inset 0 2px 0 rgba(255,255,255,.4);
   position:relative;
 }
