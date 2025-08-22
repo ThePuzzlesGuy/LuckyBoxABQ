@@ -26,8 +26,7 @@ function renderGrid(list){
           <div class="price">$${p.price.toFixed(2)}</div>
           <div class="code">${p.code}</div>
         </div>
-      </div>
-    `;
+      </div>`;
     grid.appendChild(div);
   });
 }
@@ -42,21 +41,20 @@ function bindKeypad(){
   document.querySelectorAll('.keypad .keys button[data-k]').forEach(btn => {
     btn.addEventListener('click', ()=>{
       const k = btn.dataset.k;
-      if(/[A-C]/.test(k) && buffer.length<1){ buffer = k; setMsg('enter number'); setScreen(); return;}
-      if(/[1-3]/.test(k) && buffer.length===1){ buffer += k; setMsg('tap add'); setScreen(); return;}
+      if(/[A-C]/.test(k) && buffer.length<1){ buffer = k; setMsg('enter number'); setScreen(); return; }
+      if(/[1-3]/.test(k) && buffer.length===1){ buffer += k; setMsg('tap add'); setScreen(); return; }
     });
   });
   document.getElementById('kp-clear').addEventListener('click', ()=>{ buffer=''; setMsg(''); setScreen(); });
   document.getElementById('kp-add').addEventListener('click', ()=>{
     if(buffer.length===2){
       addToCart(buffer, 1);
-      setMsg('added to cart');
+      setMsg('added to tray');
       buffer=''; setScreen();
       setTimeout(()=> setMsg(''), 1200);
     }
   });
 }
-
 
 function addToCart(code, qty=1){
   const product = PRODUCTS.find(p=>p.code===code);
@@ -66,14 +64,12 @@ function addToCart(code, qty=1){
   cart.set(code, item);
 
   // animation from slot
-  const slot = [...document.querySelectorAll('.slot .code')]
-    .find(el => el.textContent === code);
-  if(slot){ runDropAnimation(slot.closest('.slot'), product); }
+  const slotCodeEl = Array.from(document.querySelectorAll('.slot .code')).find(el => el.textContent === code);
+  if(slotCodeEl){ runDropAnimation(slotCodeEl.closest('.slot'), product); }
 
   persistCart();
   trayAddOrUpdate(code);
 }
-
 
 function removeFromCart(code){
   cart.delete(code);
@@ -102,12 +98,20 @@ function updateCartUI(){
   // cart UI removed; nothing to update here
 }
 
-
 function persistCart(){
   const obj = Array.from(cart.values()).map(x=>({code:x.product.code, name:x.product.name, series:x.product.series, price:x.product.price, qty:x.qty}));
   localStorage.setItem('luckybox_cart', JSON.stringify(obj));
 }
 
+function restoreCart(){
+  try{
+    const arr = JSON.parse(localStorage.getItem('luckybox_cart') || '[]');
+    arr.forEach(it => {
+      const product = PRODUCTS.find(p=>p.code===it.code);
+      if(product) cart.set(product.code, {product, qty: it.qty});
+    });
+  }catch(e){}
+}
 
 /* --- Pickup tray rendering & drop animation --- */
 function trayAddOrUpdate(code){
@@ -126,10 +130,8 @@ function trayAddOrUpdate(code){
         <button class="minus" aria-label="decrease">−</button>
         <button class="plus" aria-label="increase">＋</button>
       </div>`;
-    // qty clicks
     el.querySelector('.minus').addEventListener('click', (ev)=>{ ev.stopPropagation(); changeQty(code,-1); });
     el.querySelector('.plus').addEventListener('click', (ev)=>{ ev.stopPropagation(); changeQty(code,1); });
-    // drag events
     el.addEventListener('dragstart', (e)=>{ el.classList.add('dragging'); e.dataTransfer.setData('text/plain', code); });
     el.addEventListener('dragend', ()=> el.classList.remove('dragging'));
     row.appendChild(el);
@@ -137,10 +139,6 @@ function trayAddOrUpdate(code){
   const badge = el.querySelector('.badge');
   badge.textContent = item.qty;
   if(item.qty <= 1){ badge.style.display = 'none'; } else { badge.style.display = 'block'; }
-}
-  el.querySelector('.badge').textContent = item.qty;
-  if(item.qty <= 1){ el.querySelector('.badge').style.display = 'none'; }
-  else{ el.querySelector('.badge').style.display = 'block'; }
 }
 
 function runDropAnimation(fromEl, product){
@@ -154,73 +152,19 @@ function runDropAnimation(fromEl, product){
     clone.style.backgroundImage = `url('${product.image}')`;
     document.body.appendChild(clone);
 
-    const endX = tray.left + 20 + Math.random()*40; // rough landing left edge
+    const endX = tray.left + 20 + Math.random()*40;
     const endY = tray.top + 6;
+    const dx = endX - (rect.left + rect.width/2 - 40);
+    const dy = endY - (rect.top + rect.height/2 - 40);
 
     clone.animate([
       { transform:'translate(0,0) scale(1)', offset:0 },
-      { transform:`translate(${endX - (rect.left + rect.width/2 - 40)}px, ${endY - (rect.top + rect.height/2 - 40)}px) scale(.95)`, offset:.85},
-      { transform:`translate(${endX - (rect.left + rect.width/2 - 40)}px, ${endY - (rect.top + rect.height/2 - 40)}px) scale(1)`, offset:1}
+      { transform:`translate(${dx}px, ${dy}px) scale(.95)`, offset:.85},
+      { transform:`translate(${dx}px, ${dy}px) scale(1)`, offset:1}
     ], { duration: 700, easing: 'cubic-bezier(.2,.7,.2,1)' }).onfinish = ()=>{
       clone.remove();
     };
   }catch(e){}
-}
-
-function restoreCart(){
-  try{
-    const arr = JSON.parse(localStorage.getItem('luckybox_cart') || '[]');
-    arr.forEach(it => {
-      const product = PRODUCTS.find(p=>p.code===it.code);
-      if(product) cart.set(product.code, {product, qty: it.qty});
-    });
-  }catch(e){}
-}
-
-/* Drawer / Order form */
-function openDrawer(){
-  const drawer = document.querySelector('.drawer'); drawer.classList.add('open');
-  // prefill hidden cart field
-  const payload = Array.from(cart.values()).map(x=>({code:x.product.code, name:x.product.name, series:x.product.series, price:x.product.price, qty:x.qty}));
-  document.getElementById('order-items').value = JSON.stringify(payload, null, 2);
-  document.getElementById('order-total').value = document.getElementById('cart-total').textContent;
-}
-function closeDrawer(){ document.querySelector('.drawer').classList.remove('open'); }
-
-/* Utility */
-function escapeHTML(str){ return String(str).replace(/[&<>"]/g, s=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[s])); }
-function toast(t){
-  alert(t);
-}
-
-// Hook checkout
-document.addEventListener('click', e=>{
-  if(e.target && e.target.id==='checkout-btn'){ openDrawer(); }
-  if(e.target && e.target.classList.contains('close')){ closeDrawer(); }
-  if(e.target && e.target.classList.contains('drawer')){ closeDrawer(); }
-});
-/* payment logos open drawer */
-document.addEventListener('click', e=>{
-  const btn = e.target.closest('.logo-pill');
-  if(btn){ 
-    // quick blink effect on reader glow
-    const glow = document.querySelector('.reader-glow');
-    if(glow){ glow.animate([{opacity:1},{opacity:.2},{opacity:1}], {duration:400}); }
-    openDrawer();
-  }
-});
-
-// compute total before drawer opens
-const _openDrawer = openDrawer;
-openDrawer = function(){
-  // recompute total
-  let total = 0;
-  for(const [code, item] of cart){ total += item.product.price * item.qty; }
-  document.getElementById('cart-total')?.remove(); // old element no longer exists, safe
-  const payload = Array.from(cart.values()).map(x=>({code:x.product.code, name:x.product.name, series:x.product.series, price:x.product.price, qty:x.qty}));
-  document.getElementById('order-items').value = JSON.stringify(payload, null, 2);
-  document.getElementById('order-total').value = '$'+total.toFixed(2);
-  document.querySelector('.drawer').classList.add('open');
 }
 
 function setupRestockTarget(){
@@ -235,3 +179,28 @@ function setupRestockTarget(){
     if(code){ removeFromCart(code); }
   });
 }
+
+/* payment logos open drawer */
+document.addEventListener('click', (e)=>{
+  const btn = e.target.closest('.logo-pill');
+  if(btn){
+    const glow = document.querySelector('.reader-glow');
+    if(glow){ glow.animate([{opacity:1},{opacity:.2},{opacity:1}], {duration:400}); }
+    openDrawer();
+  }
+});
+
+// Override openDrawer to compute totals from tray/cart
+function openDrawer(){
+  let total = 0;
+  for(const [, item] of cart){ total += item.product.price * item.qty; }
+  const payload = Array.from(cart.values()).map(x=>({code:x.product.code, name:x.product.name, series:x.product.series, price:x.product.price, qty:x.qty}));
+  document.getElementById('order-items').value = JSON.stringify(payload, null, 2);
+  document.getElementById('order-total').value = '$'+total.toFixed(2);
+  document.querySelector('.drawer').classList.add('open');
+}
+function closeDrawer(){ document.querySelector('.drawer').classList.remove('open'); }
+
+/* Utility */
+function escapeHTML(str){ return String(str).replace(/[&<>"]/g, s=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[s])); }
+function toast(t){ alert(t); }
