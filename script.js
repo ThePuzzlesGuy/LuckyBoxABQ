@@ -7,6 +7,7 @@ async function init(){
   restoreCart();
   for(const [code] of cart){ trayAddOrUpdate(code); }
   bindKeypad();
+  setupRestockTarget();
 }
 document.addEventListener('DOMContentLoaded', init);
 
@@ -76,6 +77,8 @@ function addToCart(code, qty=1){
 
 function removeFromCart(code){
   cart.delete(code);
+  const el = document.querySelector(`.tray-item[data-code="${code}"]`);
+  if(el) el.remove();
   persistCart();
   updateCartUI();
 }
@@ -84,7 +87,16 @@ function changeQty(code, delta){
   const item = cart.get(code);
   if(!item) return;
   item.qty += delta;
-  if(item.qty<=0){ cart.delete(code); }
+  if(item.qty<=0){
+    cart.delete(code);
+    const el = document.querySelector(`.tray-item[data-code="${code}"]`);
+    if(el) el.remove();
+  }else{
+    trayAddOrUpdate(code);
+  }
+  persistCart();
+  updateCartUI();
+}
   persistCart();
   updateCartUI();
 }
@@ -104,7 +116,6 @@ function persistCart(){
 /* --- Pickup tray rendering & drop animation --- */
 function trayAddOrUpdate(code){
   const row = document.getElementById('tray-row');
-  // find existing
   let el = row.querySelector(`[data-code="${code}"]`);
   const item = cart.get(code);
   if(!item) return;
@@ -112,10 +123,25 @@ function trayAddOrUpdate(code){
     el = document.createElement('div');
     el.className = 'tray-item';
     el.dataset.code = code;
+    el.draggable = true;
     el.style.backgroundImage = `url('${item.product.image}')`;
-    el.innerHTML = `<div class="badge">1</div>`;
+    el.innerHTML = `<div class="badge">1</div>
+      <div class="mini-qty">
+        <button class="minus" aria-label="decrease">−</button>
+        <button class="plus" aria-label="increase">＋</button>
+      </div>`;
+    // qty clicks
+    el.querySelector('.minus').addEventListener('click', (ev)=>{ ev.stopPropagation(); changeQty(code,-1); });
+    el.querySelector('.plus').addEventListener('click', (ev)=>{ ev.stopPropagation(); changeQty(code,1); });
+    // drag events
+    el.addEventListener('dragstart', (e)=>{ el.classList.add('dragging'); e.dataTransfer.setData('text/plain', code); });
+    el.addEventListener('dragend', ()=> el.classList.remove('dragging'));
     row.appendChild(el);
   }
+  const badge = el.querySelector('.badge');
+  badge.textContent = item.qty;
+  if(item.qty <= 1){ badge.style.display = 'none'; } else { badge.style.display = 'block'; }
+}
   el.querySelector('.badge').textContent = item.qty;
   if(item.qty <= 1){ el.querySelector('.badge').style.display = 'none'; }
   else{ el.querySelector('.badge').style.display = 'block'; }
@@ -199,4 +225,17 @@ openDrawer = function(){
   document.getElementById('order-items').value = JSON.stringify(payload, null, 2);
   document.getElementById('order-total').value = '$'+total.toFixed(2);
   document.querySelector('.drawer').classList.add('open');
+}
+
+function setupRestockTarget(){
+  const target = document.getElementById('restock');
+  if(!target) return;
+  target.addEventListener('dragover', (e)=>{ e.preventDefault(); target.classList.add('drag-over'); });
+  target.addEventListener('dragleave', ()=> target.classList.remove('drag-over'));
+  target.addEventListener('drop', (e)=>{
+    e.preventDefault();
+    target.classList.remove('drag-over');
+    const code = e.dataTransfer.getData('text/plain');
+    if(code){ removeFromCart(code); }
+  });
 }
