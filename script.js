@@ -10,7 +10,16 @@ async function init(){
   bindKeypad();
   setupRestockTarget();
 }
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', ()=>{ init(); setTimeout(syncWindowHeight, 50); });
+
+
+function syncWindowHeight(){
+  const win = document.querySelector('.cabinet .grid');
+  if(!win) return;
+  const h = Math.round(win.getBoundingClientRect().height);
+  document.documentElement.style.setProperty('--window-h', h + 'px');
+}
+window.addEventListener('resize', ()=>{ syncWindowHeight(); });
 
 function renderGrid(list){
   const grid = document.querySelector('.grid');
