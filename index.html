@@ -22,6 +22,7 @@
         <div class="grid" aria-label="vending grid">
           <!-- filled by JS -->
         </div>
+        <div class="tray" aria-label="pickup tray"><div class="tray-row" id="tray-row"></div></div>
       </div>
 
       <div class="side">
@@ -41,10 +42,20 @@
           <p style="margin:10px 0 0;color:#b9c0cf;font-size:12px">Use the codes (A1–C3) and press <em>Add</em> to load items.</p>
         </div>
 
-        <div class="cart">
-          <h3>Cart</h3>
-          <div class="items" id="cart"></div>
-          <div class="total">
+
+        <div class="reader">
+          <div class="reader-top">
+            <div class="reader-glow">Swipe Card or Tap to Pay</div>
+          </div>
+          <div class="reader-logos">
+            <button class="logo-pill" data-pay="shop">Shop&nbsp;Pay</button>
+            <button class="logo-pill" data-pay="apple">&nbsp;Pay</button>
+            <button class="logo-pill" data-pay="google">G&nbsp;Pay</button>
+            <button class="logo-pill" data-pay="visa">VISA</button>
+            <button class="logo-pill" data-pay="mc">Mastercard</button>
+          </div>
+        </div>
+<div class="total">
             <span>Total</span>
             <strong id="cart-total">$0.00</strong>
           </div>
@@ -54,7 +65,7 @@
     </section>
 
     <section id="catalog" style="margin-top:28px">
-      <p style="color:#b9c0cf">Enter the code shown on a slot (e.g., <strong>B2</strong>) using the keypad.</p>
+      
     </section>
   </main>
 

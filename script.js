@@ -5,7 +5,7 @@ async function init(){
   PRODUCTS = await fetch('products.json').then(r=>r.json());
   renderGrid(PRODUCTS);
   restoreCart();
-  updateCartUI();
+  for(const [code] of cart){ trayAddOrUpdate(code); }
   bindKeypad();
 }
 document.addEventListener('DOMContentLoaded', init);
@@ -62,8 +62,11 @@ function addToCart(code, qty=1){
   const item = cart.get(code) || {product, qty:0};
   item.qty += qty;
   cart.set(code, item);
+  // animation from slot
+  const slot = [...document.querySelectorAll('.slot .code')].find(el=>el.textContent===code);
+  if(slot){ runDropAnimation(slot.closest('.slot'), product); }
   persistCart();
-  updateCartUI();
+  trayAddOrUpdate(code);
 }
 
 function removeFromCart(code){
@@ -81,33 +84,7 @@ function changeQty(code, delta){
   updateCartUI();
 }
 
-function updateCartUI(){
-  const list = document.querySelector('.cart .items');
-  const totalEl = document.getElementById('cart-total');
-  list.innerHTML = '';
-  let total = 0;
-  for(const [code, item] of cart){
-    const line = item.product.price * item.qty;
-    total += line;
-    const row = document.createElement('div');
-    row.className = 'item';
-    row.innerHTML = `
-      <div>
-        <strong>${escapeHTML(item.product.name)}</strong>
-        <small style="display:block;color:#9fb0cb">${escapeHTML(item.product.series||'')}</small>
-        <small>${code}</small>
-      </div>
-      <div class="qty">
-        <button aria-label="decrease" onclick="changeQty('${code}',-1)">−</button>
-        <strong>${item.qty}</strong>
-        <button aria-label="increase" onclick="changeQty('${code}',1)">＋</button>
-      </div>
-      <div style="text-align:right">
-        $${line.toFixed(2)} <button class="remove" onclick="removeFromCart('${code}')">✕</button>
-      </div>
-    `;
-    list.appendChild(row);
-  }
+function updateCartUI(){ /* cart UI removed */ }
   totalEl.textContent = '$' + total.toFixed(2);
   document.getElementById('checkout-btn').disabled = total<=0;
 }
@@ -115,6 +92,51 @@ function updateCartUI(){
 function persistCart(){
   const obj = Array.from(cart.values()).map(x=>({code:x.product.code, name:x.product.name, series:x.product.series, price:x.product.price, qty:x.qty}));
   localStorage.setItem('luckybox_cart', JSON.stringify(obj));
+}
+
+
+/* --- Pickup tray rendering & drop animation --- */
+function trayAddOrUpdate(code){
+  const row = document.getElementById('tray-row');
+  // find existing
+  let el = row.querySelector(`[data-code="${code}"]`);
+  const item = cart.get(code);
+  if(!item) return;
+  if(!el){
+    el = document.createElement('div');
+    el.className = 'tray-item';
+    el.dataset.code = code;
+    el.style.backgroundImage = `url('${item.product.image}')`;
+    el.innerHTML = `<div class="badge">1</div>`;
+    row.appendChild(el);
+  }
+  el.querySelector('.badge').textContent = item.qty;
+  if(item.qty <= 1){ el.querySelector('.badge').style.display = 'none'; }
+  else{ el.querySelector('.badge').style.display = 'block'; }
+}
+
+function runDropAnimation(fromEl, product){
+  try{
+    const rect = fromEl.getBoundingClientRect();
+    const tray = document.querySelector('.tray').getBoundingClientRect();
+    const clone = document.createElement('div');
+    clone.className = 'fall-clone';
+    clone.style.left = (rect.left + rect.width/2 - 40) + 'px';
+    clone.style.top = (rect.top + rect.height/2 - 40) + 'px';
+    clone.style.backgroundImage = `url('${product.image}')`;
+    document.body.appendChild(clone);
+
+    const endX = tray.left + 20 + Math.random()*40; // rough landing left edge
+    const endY = tray.top + 6;
+
+    clone.animate([
+      { transform:'translate(0,0) scale(1)', offset:0 },
+      { transform:`translate(${endX - (rect.left + rect.width/2 - 40)}px, ${endY - (rect.top + rect.height/2 - 40)}px) scale(.95)`, offset:.85},
+      { transform:`translate(${endX - (rect.left + rect.width/2 - 40)}px, ${endY - (rect.top + rect.height/2 - 40)}px) scale(1)`, offset:1}
+    ], { duration: 700, easing: 'cubic-bezier(.2,.7,.2,1)' }).onfinish = ()=>{
+      clone.remove();
+    };
+  }catch(e){}
 }
 
 function restoreCart(){
@@ -149,3 +171,26 @@ document.addEventListener('click', e=>{
   if(e.target && e.target.classList.contains('close')){ closeDrawer(); }
   if(e.target && e.target.classList.contains('drawer')){ closeDrawer(); }
 });
+/* payment logos open drawer */
+document.addEventListener('click', e=>{
+  const btn = e.target.closest('.logo-pill');
+  if(btn){ 
+    // quick blink effect on reader glow
+    const glow = document.querySelector('.reader-glow');
+    if(glow){ glow.animate([{opacity:1},{opacity:.2},{opacity:1}], {duration:400}); }
+    openDrawer();
+  }
+});
+
+// compute total before drawer opens
+const _openDrawer = openDrawer;
+openDrawer = function(){
+  // recompute total
+  let total = 0;
+  for(const [code, item] of cart){ total += item.product.price * item.qty; }
+  document.getElementById('cart-total')?.remove(); // old element no longer exists, safe
+  const payload = Array.from(cart.values()).map(x=>({code:x.product.code, name:x.product.name, series:x.product.series, price:x.product.price, qty:x.qty}));
+  document.getElementById('order-items').value = JSON.stringify(payload, null, 2);
+  document.getElementById('order-total').value = '$'+total.toFixed(2);
+  document.querySelector('.drawer').classList.add('open');
+}
