@@ -77,7 +77,7 @@ a{color:inherit}
 
 
 .side{
-  display:grid; grid-template-rows:auto 1fr auto; gap:16px;
+  display:grid; grid-template-rows:auto auto; gap:16px; align-content:start;
 }
 
 /* Keypad */
@@ -193,11 +193,6 @@ input, textarea, select{
 }
 
 /* --- Reader Panel --- */
-.reader{
-  background:linear-gradient(180deg, #0e121a, #0a0d13);
-  border-radius:16px; padding:14px; margin-top:16px;
-  box-shadow: inset 0 0 0 2px rgba(0,0,0,.55);
-}
 .reader-top{
   background:#070a0f; border-radius:10px; padding:10px; margin-bottom:10px;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
@@ -258,3 +253,59 @@ input, textarea, select{
 }
 .restock-label{ font-size:10px; text-align:center; color:#9fb0cb }
 .restock.drag-over{ outline:2px solid #20c997; outline-offset:2px }
+
+
+/* --- Reader Panel (compact, auto-height) --- */
+.reader{
+  background:linear-gradient(180deg, #0e121a, #0a0d13);
+  border-radius:16px;
+  padding:14px;
+  margin-top:16px;
+  box-shadow: inset 0 0 0 2px rgba(0,0,0,.55);
+  align-self:start; /* don't stretch */
+}
+.reader-top{
+  background:#070a0f;
+  border-radius:10px;
+  padding:8px 10px;
+  margin-bottom:10px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
+}
+.reader-glow{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  color:#9fffae;
+  text-align:center;
+  font-weight:800;
+  letter-spacing:.04em;
+  text-shadow: 0 0 8px rgba(159,255,174,.25);
+  white-space:nowrap;
+}
+
+/* Payment buttons become a tidy grid */
+.reader-logos{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap:10px;
+}
+.logo-pill{
+  border:0;
+  border-radius:999px;
+  background:#1a1f29;
+  color:#e8eef9;
+  font-weight:800;
+  height:40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 12px;
+  cursor:pointer;
+  box-shadow: inset 0 -2px 0 rgba(255,255,255,.04);
+}
+.logo-pill:hover{ filter:brightness(1.08) }
+
+@media (max-width: 900px){
+  .reader-logos{
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
