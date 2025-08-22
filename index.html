@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Lucky Box — Blind Box Ordering</title>
+  <meta name="description" content="Order blind boxes from Lucky Box — ABQ's first blind box vending experience."/>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <header class="header">
+    <img src="logo.svg" alt="Lucky Box logo"/>
+    <div class="brand">LUCKY BOX</div>
+    <div class="spacer"></div>
+    <div class="pill">Inside Talin Market • Open & Vending</div>
+  </header>
+
+  <main class="container">
+    <section class="machine">
+      <div class="cabinet">
+        <div class="grid" aria-label="vending grid">
+          <!-- filled by JS -->
+        </div>
+      </div>
+
+      <div class="side">
+        <div class="keypad" aria-label="keypad">
+          <div class="screen"><code>—</code><span></span></div>
+          <div class="keys">
+            <button data-k="A">A</button>
+            <button data-k="B">B</button>
+            <button data-k="C">C</button>
+            <button data-k="1">1</button>
+            <button data-k="2">2</button>
+            <button data-k="3">3</button>
+            <button id="kp-clear">Clear</button>
+            <button id="kp-add" class="action">Add</button>
+            <button onclick="location.href='#catalog'">Catalog</button>
+          </div>
+          <p style="margin:10px 0 0;color:#b9c0cf;font-size:12px">Type a code (e.g., <strong>A1</strong>) then tap <em>Add</em>.</p>
+        </div>
+
+        <div class="cart">
+          <h3>Cart</h3>
+          <div class="items" id="cart"></div>
+          <div class="total">
+            <span>Total</span>
+            <strong id="cart-total">$0.00</strong>
+          </div>
+          <button id="checkout-btn" class="checkout" disabled>Checkout</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="catalog" style="margin-top:28px">
+      <p style="color:#b9c0cf">Tap any item or use the keypad to add to your cart.</p>
+    </section>
+  </main>
+
+  <!-- Drawer -->
+  <div class="drawer" role="dialog" aria-modal="true">
+    <div class="sheet">
+      <button class="close" aria-label="Close">✕</button>
+      <h2>Checkout</h2>
+      <p>Enter your info and submit your order request. We'll text or email you when it's ready for pickup or delivery options.</p>
+
+      <!-- Netlify form -->
+      <form name="order" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="form" action="/thanks.html">
+        <input type="hidden" name="form-name" value="order"/>
+        <p style="display:none">
+          <label>Don’t fill this out if you’re human: <input name="bot-field"/></label>
+        </p>
+
+        <div class="row">
+          <p><label>Name<br/><input type="text" name="name" required/></label></p>
+          <p><label>Email<br/><input type="email" name="email" required/></label></p>
+        </div>
+
+        <div class="row">
+          <p><label>Phone (for pickup)<br/><input type="tel" name="phone"/></label></p>
+          <p><label>Pickup or Delivery?<br/>
+            <select name="fulfillment" required>
+              <option value="pickup" selected>Pickup at Talin Market</option>
+              <option value="delivery">Local delivery (we'll confirm)</option>
+            </select>
+          </label></p>
+        </div>
+
+        <p><label>Notes (optional)<br/><textarea name="notes" rows="3" placeholder="Any preferences or special requests?"></textarea></label></p>
+
+        <!-- Cart payload -->
+        <textarea id="order-items" name="items" style="display:none"></textarea>
+        <input id="order-total" type="hidden" name="total"/>
+
+        <button class="submit" type="submit">Submit Order</button>
+      </form>
+    </div>
+  </div>
+
+  <footer class="footer">
+    © <span id="year"></span> Lucky Box • Albuquerque, NM
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

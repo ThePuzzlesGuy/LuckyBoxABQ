@@ -1,0 +1,1 @@
+Drop product photos here and update paths in products.json if needed.
