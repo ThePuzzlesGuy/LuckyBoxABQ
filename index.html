@@ -13,15 +13,12 @@
     <img src="logo.svg" alt="Lucky Box logo"/>
     <div class="brand">LUCKY BOX</div>
     <div class="spacer"></div>
-    <div class="pill">Inside Talin Market • Open & Vending</div>
   </header>
 
   <main class="container">
     <section class="machine">
       <div class="cabinet">
-        <div class="grid" aria-label="vending grid">
-          <!-- filled by JS -->
-        </div>
+        <div class="grid" aria-label="vending grid"></div>
         <div class="tray" aria-label="pickup tray">
           <div class="tray-row" id="tray-row"></div>
           <div class="restock" id="restock" title="Drag here to restock">🔁</div>
@@ -29,96 +26,71 @@
       </div>
 
       <div class="side">
-  <div class="side-left">
-        <div class="keypad" aria-label="keypad">
-          <div class="screen"><code>—</code><span></span></div>
-          <div class="keys">
-            <button data-k="A">A</button>
-            <button data-k="B">B</button>
-            <button data-k="C">C</button>
-            <button data-k="1">1</button>
-            <button data-k="2">2</button>
-            <button data-k="3">3</button>
-            <button id="kp-clear">Clear</button>
-            <button id="kp-add" class="action">Add</button>
-            <button onclick="location.href='#catalog'">Catalog</button>
+        <div class="side-left">
+          <div class="keypad" aria-label="keypad">
+            <div class="screen"><code>—</code><span></span></div>
+            <div class="keys">
+              <button data-k="A">A</button>
+              <button data-k="B">B</button>
+              <button data-k="C">C</button>
+              <button data-k="1">1</button>
+              <button data-k="2">2</button>
+              <button data-k="3">3</button>
+              <button id="kp-clear">Clear</button>
+              <button id="kp-add" class="action">Add</button>
+              <button onclick="location.href='#catalog'">Catalog</button>
+            </div>
+            <p class="hint">Use the codes (A1–C3) and press <em>Add</em> to load items.</p>
           </div>
-          <p style="margin:10px 0 0;color:#b9c0cf;font-size:12px">Use the codes (A1–C3) and press <em>Add</em> to load items.</p>
+
+          <div class="reader">
+            <div class="reader-top">
+              <div class="reader-glow">Swipe Card or Tap to Pay</div>
+            </div>
+            <div class="reader-logos">
+              <button class="logo-pill" data-pay="shop">Shop&nbsp;Pay</button>
+              <button class="logo-pill" data-pay="apple">&nbsp;Pay</button>
+              <button class="logo-pill" data-pay="google">G&nbsp;Pay</button>
+              <button class="logo-pill" data-pay="visa">VISA</button>
+              <button class="logo-pill" data-pay="mc">Mastercard</button>
+            </div>
+            <div class="reader-total">Total <strong id="reader-total">$0.00</strong></div>
+          </div>
         </div>
 
-
-        <div class="reader">
-          <div class="reader-top">
-            <div class="reader-glow">Swipe Card or Tap to Pay</div>
-          </div>
-          <div class="reader-logos">
-            <button class="logo-pill" data-pay="shop">Shop&nbsp;Pay</button>
-            <button class="logo-pill" data-pay="apple">&nbsp;Pay</button>
-            <button class="logo-pill" data-pay="google">G&nbsp;Pay</button>
-            <button class="logo-pill" data-pay="visa">VISA</button>
-            <button class="logo-pill" data-pay="mc">Mastercard</button>
-          </div>
-          <div class="reader-total">Total <strong id="reader-total">$0.00</strong></div>
-        </div>
-</div>
+        <aside class="prize-case" aria-label="display case">
+          <div class="shelf"><img src="images/prize1.png" alt="Prize 1"/></div>
+          <div class="shelf"><img src="images/prize2.png" alt="Prize 2"/></div>
+          <div class="shelf"><img src="images/prize3.png" alt="Prize 3"/></div>
+          <div class="shelf"><img src="images/prize4.png" alt="Prize 4"/></div>
+        </aside>
       </div>
-    </section>
-
-    <section id="catalog" style="margin-top:28px">
-      
     </section>
   </main>
 
-  <!-- Drawer -->
   <div class="drawer" role="dialog" aria-modal="true">
     <div class="sheet">
       <button class="close" aria-label="Close">✕</button>
       <h2>Checkout</h2>
       <p>Enter your info for delivery. We’ll reach out if we need anything else and confirm drop-off timing.</p>
-
-      <!-- Netlify form -->
       <form name="order" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="form" action="/thanks.html">
         <input type="hidden" name="form-name" value="order"/>
-        <p style="display:none">
-          <label>Don’t fill this out if you’re human: <input name="bot-field"/></label>
-        </p>
-
-        <div class="row">
-          <p><label>Name<br/><input type="text" name="name" required/></label></p>
-          <p><label>Email<br/><input type="email" name="email" required/></label></p>
-        </div>
-
-        <div class="row">
-          <p><label>Phone (for delivery)<br/><input type="tel" name="phone"/></label></p>
-          <p><label>Address Line 1<br/><input type="text" name="address1" required/></label></p>
-        </div>
-        <div class="row">
-          <p><label>Address Line 2 (optional)<br/><input type="text" name="address2"/></label></p>
-          <p><label>City<br/><input type="text" name="city" required/></label></p>
-        </div>
-        <div class="row">
-          <p><label>State<br/><input type="text" name="state" required/></label></p>
-          <p><label>ZIP Code<br/><input type="text" name="zip" required/></label></p>
-        </div>
-
+        <p style="display:none"><label>Don’t fill this out if you’re human: <input name="bot-field"/></label></p>
+        <div class="row"><p><label>Name<br/><input type="text" name="name" required/></label></p><p><label>Email<br/><input type="email" name="email" required/></label></p></div>
+        <div class="row"><p><label>Phone (for delivery)<br/><input type="tel" name="phone"/></label></p><p><label>Address Line 1<br/><input type="text" name="address1" required/></label></p></div>
+        <div class="row"><p><label>Address Line 2 (optional)<br/><input type="text" name="address2"/></label></p><p><label>City<br/><input type="text" name="city" required/></label></p></div>
+        <div class="row"><p><label>State<br/><input type="text" name="state" required/></label></p><p><label>ZIP Code<br/><input type="text" name="zip" required/></label></p></div>
         <p><label>Notes (optional)<br/><textarea name="notes" rows="3" placeholder="Any preferences or special requests?"></textarea></label></p>
-
-        <!-- Cart payload -->
         <textarea id="order-items" name="items" style="display:none"></textarea>
         <input id="order-total" type="hidden" name="total"/>
-
         <button class="submit" type="submit">Submit Order</button>
       </form>
     </div>
   </div>
 
-  <footer class="footer">
-    © <span id="year"></span> Lucky Box • Albuquerque, NM
-  </footer>
+  <footer class="footer">© <span id="year"></span> Lucky Box • Albuquerque, NM</footer>
 
   <script src="script.js"></script>
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
 </html>
