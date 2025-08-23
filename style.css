@@ -82,7 +82,8 @@ body{
 /* ========== MIDDLE: CHOICE + CART ========== */
 .console{
   display:grid;
-  grid-template-rows:auto auto auto auto 1fr auto; /* screen, controls, hint, coin, cart, total */
+  /* screen, controls, hint, coin, cart (flex), total */
+  grid-template-rows:auto auto auto auto 1fr auto;
   gap:12px;
 }
 
@@ -124,26 +125,36 @@ body{
   cursor:pointer;
 }
 
-/* cart module (title + screen) — tightened spacing & bezel */
+/* ===== CART: title + screen packed at the very top ===== */
 .cart-box{
   background:var(--yellow);
   border:8px solid var(--black);
   border-radius:12px;
   padding:10px;
   display:grid;
-  grid-template-rows:auto auto; /* title + screen */
-  gap:4px;                /* closer to the title */
+  grid-template-rows:auto auto;      /* title + screen only */
+  gap:0;                             /* no gap between title & screen */
   align-items:start;
+  align-content:start;               /* pack tracks to the top */
+  justify-content:stretch;
+  align-self:start;                  /* item sits at top of the 1fr row in .console */
 }
 .cart-title{
   font-weight:900;
-  margin:0 0 2px 0;      /* minimal space under title */
+  margin:0;                           /* zero spacing around the text */
+  line-height:1;
 }
 
-/* cart screen + overlay controls */
-.cart-screen{            /* inherits .screen size/shape */
-  height:200px;          /* keep equal with choice screen */
-  border:6px solid var(--black); /* tighter bezel */
+/* cart screen + overlay controls (tight bezel) */
+.cart-screen{
+  height:200px;                       /* equal with choice screen */
+  margin-top:0;                       /* sits right under the title */
+  background:#000;
+  border:6px solid var(--black);      /* tighter bezel that hugs image */
+  border-radius:10px;
+  background-size:cover;
+  background-position:center;
+  position:relative;
 }
 .cart-screen .overlay{
   position:absolute; bottom:10px;
@@ -155,12 +166,9 @@ body{
 .cart-screen .o-next{right:10px}
 .cart-screen .o-qty{
   left:50%; transform:translateX(-50%);
-  display:flex; align-items:center; gap:10px;
-  padding:6px 10px;
+  display:flex; align-items:center; gap:10px; padding:6px 10px;
 }
-.cart-screen .o-qty .qty{
-  min-width:28px; text-align:center; font-weight:900;
-}
+.cart-screen .o-qty .qty{ min-width:28px; text-align:center; font-weight:900 }
 .cart-screen .o-qty .o-minus,
 .cart-screen .o-qty .o-plus{
   width:28px; height:28px; border-radius:8px;
