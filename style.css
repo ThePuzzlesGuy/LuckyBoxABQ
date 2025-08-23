@@ -110,6 +110,7 @@ body{
 /* arrows under choice screen */
 .screen-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .screen-controls button{
+  margin-top:5px;
   background:var(--btn); color:#fff;
   border:0; border-radius:10px; padding:10px 0;
   font-weight:800; cursor:pointer;
