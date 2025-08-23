@@ -10,7 +10,7 @@ body{ margin:0; background:var(--bg); color:var(--text); font:16px/1.4 Inter, sy
 .slot .title{ font-weight:900 } .slot .series{ color:#667085; font-size:12px; margin-top:2px }
 .slot .row{ display:flex; align-items:center; justify-content:space-between; margin-top:6px } .slot .price{ font-weight:900 } .slot .code{ display:none }
 .console{ display:grid; grid-template-rows:auto auto auto 1fr auto; gap:12px; align-items:start }
-.mini-screen{ height:100px; background:#000; border:8px solid var(--bezel); border-radius:10px; display:grid; place-items:center; padding:0; background-size:cover; background-position:center; cursor:pointer; position:relative }
+.mini-screen{ height:160px;  height:100px; background:#000; border:8px solid var(--bezel); border-radius:10px; display:grid; place-items:center; padding:0; background-size:cover; background-position:center; cursor:pointer; position:relative }
 .mini-screen .label{ position:absolute; bottom:6px; left:8px; right:8px; color:#fff; font-weight:900; font-size:12px; text-shadow:0 1px 2px rgba(0,0,0,.6) }
 .mini-keys{ background:var(--panel); border-radius:12px; padding:8px; border:8px solid var(--bezel); display:grid; grid-template-columns:repeat(2,1fr); gap:8px }
 .mini-keys button{ padding:10px 0; border:0; border-radius:10px; background:#2a2f39; color:#fff; font-weight:800; cursor:pointer }
@@ -48,3 +48,12 @@ body{ margin:0; background:var(--bg); color:var(--text); font:16px/1.4 Inter, sy
 .cart-controls button{ padding:10px 0; border:0; border-radius:10px; background:#2a2f39; color:#fff; font-weight:800; cursor:pointer }
 .cart-controls .qty{ display:flex; align-items:center; gap:8px; justify-content:center }
 .cart-controls .qty .cqty{ min-width:28px; text-align:center; font-weight:900 }
+
+/* Cart overlay controls inside screen */
+.cart-display{ height:160px; position:relative; background-size:cover; background-position:center; border:8px solid var(--bezel); border-radius:10px }
+.cart-display .overlay{ position:absolute; bottom:10px; background:#2a2f39; color:#fff; border:0; border-radius:10px; font-weight:800; padding:8px 12px; opacity:.95 }
+.cart-display .overlay.prev{ left:10px }
+.cart-display .overlay.next{ right:10px }
+.cart-display .overlay.qty{ left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:10px; padding:6px 10px }
+.cart-display .overlay.qty .cqty{ min-width:28px; text-align:center; font-weight:900 }
+.cart-display .overlay.qty .minus,.cart-display .overlay.qty .plus{ width:28px; height:28px; border-radius:8px; background:#0f1420; color:#e7eefc; border:0 }

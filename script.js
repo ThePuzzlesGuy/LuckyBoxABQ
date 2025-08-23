@@ -10,7 +10,7 @@ async function init(){
   restoreCart();
   renderTotal(); renderCartScreen();
   buildCarousel();
-  setupCartTray(); buildCartCarousel();
+   buildCartCarousel();
   document.addEventListener('click', (e)=>{
     if(e.target.closest('.coin')){
       if(cart.size===0){ alert('Add at least one item first.'); return; }
@@ -52,12 +52,12 @@ function renderCarousel(){
 function addToCart(code, qty=1){
   const product = PRODUCTS.find(p=>p.code===code); if(!product) return;
   const item = cart.get(code) || {product, qty:0}; item.qty += qty; cart.set(code,item);
-  trayAddOrUpdate(code); persistCart(); renderTotal(); renderCartScreen();
+  persistCart(); renderTotal(); renderCartScreen();
 }
 function changeQty(code, delta){
   const item = cart.get(code); if(!item) return; item.qty += delta;
   if(item.qty<=0){ cart.delete(code); const el=document.querySelector(`.tray-item[data-code="${code}"]`); el&&el.remove(); }
-  else{ trayAddOrUpdate(code); }
+  else{ }
   persistCart(); renderTotal(); renderCartScreen();
 }
 function trayAddOrUpdate(code){
@@ -73,7 +73,7 @@ function trayAddOrUpdate(code){
   }
   const badge = el.querySelector('.badge'); badge.textContent = item.qty; badge.style.display = item.qty>1 ? 'block' : 'none';
 }
-function setupCartTray(){ for(const [code] of cart) trayAddOrUpdate(code); }
+function setupCartTray(){ for(const [code] of cart) }
 function renderTotal(){
   const el = document.getElementById('reader-total'); let t=0; for(const [, it] of cart){ t += it.product.price * it.qty; } if(el) el.textContent = '$'+t.toFixed(2);
   const payload = Array.from(cart.values()).map(x=>({code:x.product.code, name:x.product.name, series:x.product.series, price:x.product.price, qty:x.qty}));
@@ -90,23 +90,38 @@ function escapeHTML(str){ return String(str).replace(/[&<>"]/g, s=>({ '&':'&amp;
 let CART_KEYS = []; // codes in cart
 let CART_INDEX = 0;
 function syncCartKeys(){ CART_KEYS = Array.from(cart.keys()); if(CART_INDEX>=CART_KEYS.length) CART_INDEX=Math.max(0,CART_KEYS.length-1); }
+
+  const code=CART_KEYS[CART_INDEX]; const item=cart.get(code);
+  disp.style.backgroundImage=`url('${item.product.image}')`; lab.textContent=item.product.name; qtyEl.textContent=item.qty;
+}
+
 function buildCartCarousel(){
-  const prev=document.querySelector('.cart-controls .cprev');
-  const next=document.querySelector('.cart-controls .cnext');
-  const plus=document.querySelector('.cart-controls .cplus');
-  const minus=document.querySelector('.cart-controls .cminus');
+  const disp = document.querySelector('.cart-display');
+  const prev = disp.querySelector('.prev');
+  const next = disp.querySelector('.next');
+  const plus = disp.querySelector('.plus');
+  const minus = disp.querySelector('.minus');
   prev.addEventListener('click', ()=>{ if(CART_KEYS.length){ CART_INDEX=(CART_INDEX-1+CART_KEYS.length)%CART_KEYS.length; renderCartScreen(); } });
   next.addEventListener('click', ()=>{ if(CART_KEYS.length){ CART_INDEX=(CART_INDEX+1)%CART_KEYS.length; renderCartScreen(); } });
   plus.addEventListener('click', ()=>{ const code=CART_KEYS[CART_INDEX]; if(code) changeQty(code,+1); });
   minus.addEventListener('click', ()=>{ const code=CART_KEYS[CART_INDEX]; if(code) changeQty(code,-1); });
   renderCartScreen();
 }
+
 function renderCartScreen(){
   syncCartKeys();
   const disp=document.querySelector('.cart-display');
-  const qtyEl=document.querySelector('.cart-controls .cqty');
+  const qtyEl=disp.querySelector('.cqty');
   const lab=disp.querySelector('.label');
-  if(CART_KEYS.length===0){ disp.style.backgroundImage='none'; lab.textContent='Cart is empty'; qtyEl.textContent='0'; return; }
-  const code=CART_KEYS[CART_INDEX]; const item=cart.get(code);
-  disp.style.backgroundImage=`url('${item.product.image}')`; lab.textContent=item.product.name; qtyEl.textContent=item.qty;
+  if(CART_KEYS.length===0){
+    disp.style.backgroundImage='none';
+    lab.textContent='Cart is empty';
+    qtyEl.textContent='0';
+    return;
+  }
+  const code=CART_KEYS[CART_INDEX];
+  const item=cart.get(code);
+  disp.style.backgroundImage=`url('${item.product.image}')`;
+  lab.textContent=item.product.name;
+  qtyEl.textContent=item.qty;
 }
