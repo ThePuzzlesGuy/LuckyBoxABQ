@@ -82,8 +82,8 @@ body{
 /* ========== MIDDLE: CHOICE + CART ========== */
 .console{
   display:grid;
-  /* screen, controls, hint, coin, cart (flex), total */
-  grid-template-rows:auto auto auto auto 1fr auto;
+  /* screen, controls, hint, coin, cart (includes total inside) */
+  grid-template-rows:auto auto auto auto auto;
   gap:12px;
 }
 
@@ -175,8 +175,13 @@ body{
   background:#0f1420; color:#e7eefc; border:0; cursor:pointer;
 }
 
-/* total at bottom of middle column */
-.total{text-align:right; font-weight:900}
+/* total under cart screen */
+.total{
+  text-align:center;       /* center instead of right */
+  font-weight:900;
+  margin-top:8px;          /* some breathing room under cart screen */
+}
+
 
 /* ========== RIGHT: PRIZE CASE (4 shelves) ========== */
 .prize-case{
