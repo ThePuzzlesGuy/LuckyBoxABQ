@@ -98,7 +98,10 @@ body{
   position:relative;
   display:block;
 }
-#choice-screen{cursor:pointer}
+#choice-screen{
+  cursor:pointer;
+  margin-top:12px;   /* tweak 8–16px to taste */
+}
 .screen .label{
   position:absolute; left:10px; right:10px; bottom:10px;
   color:#fff; font-weight:900; text-shadow:0 2px 6px rgba(0,0,0,.6);
