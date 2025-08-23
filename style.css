@@ -226,3 +226,6 @@ body{
   .console{grid-template-rows:auto auto auto auto auto auto}
   .prize-case{grid-template-rows:repeat(4,160px)}
 }
+
+/* hide any old total that might still be outside the box */
+.console > .total{ display:none !important; }
