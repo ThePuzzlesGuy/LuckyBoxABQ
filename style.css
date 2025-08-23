@@ -124,22 +124,26 @@ body{
   cursor:pointer;
 }
 
-/* cart module (title + screen); no extra filler below */
+/* cart module (title + screen) — tightened spacing & bezel */
 .cart-box{
   background:var(--yellow);
   border:8px solid var(--black);
   border-radius:12px;
   padding:10px;
   display:grid;
-  grid-template-rows:auto auto; /* just title + screen */
-  gap:6px;
+  grid-template-rows:auto auto; /* title + screen */
+  gap:4px;                /* closer to the title */
   align-items:start;
 }
-.cart-title{font-weight:900; margin:0}
+.cart-title{
+  font-weight:900;
+  margin:0 0 2px 0;      /* minimal space under title */
+}
 
 /* cart screen + overlay controls */
-.cart-screen{ /* inherits .screen size & look */
-  height:200px; /* ensure match */
+.cart-screen{            /* inherits .screen size/shape */
+  height:200px;          /* keep equal with choice screen */
+  border:6px solid var(--black); /* tighter bezel */
 }
 .cart-screen .overlay{
   position:absolute; bottom:10px;
