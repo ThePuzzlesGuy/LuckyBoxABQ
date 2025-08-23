@@ -132,7 +132,7 @@ body{
   border-radius:12px;
   padding:10px;
   display:grid;
-  grid-template-rows:auto auto;      /* title + screen only */
+  grid-template-rows:auto auto auto;  /* title, screen, total */
   gap:0;                             /* no gap between title & screen */
   align-items:start;
   align-content:start;               /* pack tracks to the top */
@@ -176,10 +176,10 @@ body{
 }
 
 /* total under cart screen */
-.total{
-  text-align:center;       /* center instead of right */
+.cart-total{
+  text-align:center;
   font-weight:900;
-  margin-top:8px;          /* some breathing room under cart screen */
+  margin-top:8px;
 }
 
 
