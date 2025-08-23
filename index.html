@@ -3,69 +3,41 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Lucky Box — Blind Box Ordering</title>
-  <meta name="description" content="Order blind boxes from Lucky Box — ABQ's first blind box vending experience."/>
+  <title>Lucky Box — Ordering</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml"/>
   <link rel="stylesheet" href="style.css"/>
 </head>
-<body>
+<body class="theme-lucky">
   <header class="header">
     <img src="logo.svg" alt="Lucky Box logo"/>
     <div class="brand">LUCKY BOX</div>
     <div class="spacer"></div>
   </header>
 
-  <main class="container">
-    <section class="machine">
-      <div class="cabinet">
-        <div class="grid" aria-label="vending grid"></div>
-        <div class="tray" aria-label="pickup tray">
-          <div class="tray-row" id="tray-row"></div>
-          <div class="restock" id="restock" title="Drag here to restock">🔁</div>
-        </div>
+  <main class="machine3">
+    <section class="window">
+      <div class="window-header">
+        <img src="logo.svg" alt="Lucky Box" class="window-logo"/>
+        <h1>LUCKY<br/>BOX</h1>
       </div>
-
-      <div class="side">
-        <div class="side-left">
-          <div class="keypad" aria-label="keypad">
-            <div class="screen"><code>—</code><span></span></div>
-            <div class="keys">
-              <button data-k="A">A</button>
-              <button data-k="B">B</button>
-              <button data-k="C">C</button>
-              <button data-k="1">1</button>
-              <button data-k="2">2</button>
-              <button data-k="3">3</button>
-              <button id="kp-clear">Clear</button>
-              <button id="kp-add" class="action">Add</button>
-              <button onclick="location.href='#catalog'">Catalog</button>
-            </div>
-            <p class="hint">Use the codes (A1–C3) and press <em>Add</em> to load items.</p>
-          </div>
-
-          <div class="reader">
-            <div class="reader-top">
-              <div class="reader-glow">Swipe Card or Tap to Pay</div>
-            </div>
-            <div class="reader-logos">
-              <button class="logo-pill" data-pay="shop">Shop&nbsp;Pay</button>
-              <button class="logo-pill" data-pay="apple">&nbsp;Pay</button>
-              <button class="logo-pill" data-pay="google">G&nbsp;Pay</button>
-              <button class="logo-pill" data-pay="visa">VISA</button>
-              <button class="logo-pill" data-pay="mc">Mastercard</button>
-            </div>
-            <div class="reader-total">Total <strong id="reader-total">$0.00</strong></div>
-          </div>
-        </div>
-
-        <aside class="prize-case" aria-label="display case">
-          <div class="shelf"><img src="images/prize1.png" alt="Prize 1"/></div>
-          <div class="shelf"><img src="images/prize2.png" alt="Prize 2"/></div>
-          <div class="shelf"><img src="images/prize3.png" alt="Prize 3"/></div>
-          <div class="shelf"><img src="images/prize4.png" alt="Prize 4"/></div>
-        </aside>
-      </div>
+      <div class="grid" aria-label="vending grid"></div>
     </section>
+
+    <section class="console">
+      <div class="mini-screen" title="Tap to add shown item"><div class="label"></div></div>
+      <div class="mini-keys"><button class="nav prev" aria-label="Previous">◀</button><button class="nav next" aria-label="Next">▶</button></div>
+      <p class="mini-hint">Tap the screen to add the shown item to your cart.</p>
+      <button class="coin" title="Checkout">$</button>
+      <div class="cart-window"><div class="cart-title">YOUR CART</div><div class="tray-row" id="tray-row"></div></div>
+      <div class="total-line">Total <strong id="reader-total">$0.00</strong></div>
+    </section>
+
+    <aside class="case4">
+      <div class="case-slot"><img src="images/prize1.png" alt="Prize 1"/></div>
+      <div class="case-slot"><img src="images/prize2.png" alt="Prize 2"/></div>
+      <div class="case-slot"><img src="images/prize3.png" alt="Prize 3"/></div>
+      <div class="case-slot"><img src="images/prize4.png" alt="Prize 4"/></div>
+    </aside>
   </main>
 
   <div class="drawer" role="dialog" aria-modal="true">
@@ -89,7 +61,6 @@
   </div>
 
   <footer class="footer">© <span id="year"></span> Lucky Box • Albuquerque, NM</footer>
-
   <script src="script.js"></script>
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>

@@ -4,62 +4,62 @@
     "name": "LULU THE PIGGY",
     "series": "Animal Party Puppet Show",
     "price": 16.99,
-    "image": "images/lulu-animal-party.jpg"
+    "image": "images/prize1.png"
   },
   {
     "code": "A2",
     "name": "LULU THE PIGGY",
-    "series": "Vintage Teddy Vinyl Plush",
+    "series": "Vintage Teddy Vinyl",
     "price": 20.99,
-    "image": "images/lulu-vintage-teddy.jpg"
+    "image": "images/prize2.png"
   },
   {
     "code": "A3",
     "name": "MITAO CAT",
-    "series": "Love Like Peach Series",
+    "series": "Love Like Peach",
     "price": 14.99,
-    "image": "images/mitao-cat.jpg"
+    "image": "images/prize3.png"
   },
   {
     "code": "B1",
     "name": "MIO CAT",
-    "series": "Enchanting Beauty Series",
+    "series": "Enchanting Beauty",
     "price": 14.99,
-    "image": "images/mio-cat.jpg"
+    "image": "images/prize4.png"
   },
   {
     "code": "B2",
     "name": "AIDA",
-    "series": "Quiet Planet Series",
+    "series": "Quiet Planet",
     "price": 13.99,
-    "image": "images/aida-quiet-planet.jpg"
+    "image": "images/prize3.png"
   },
   {
     "code": "B3",
     "name": "PUPPY GOJI",
-    "series": "Life Diary Series",
+    "series": "Life Diary",
     "price": 14.99,
-    "image": "images/puppy-goji.jpg"
+    "image": "images/prize1.png"
   },
   {
     "code": "C1",
     "name": "THE SLLO",
-    "series": "Fluffy Dino Series",
+    "series": "Fluffy Dino",
     "price": 18.99,
-    "image": "images/the-sllo.jpg"
+    "image": "images/prize2.png"
   },
   {
     "code": "C2",
     "name": "LUCKY EMMA",
-    "series": "Secret Forest Birthday Party",
+    "series": "Secret Forest Bday",
     "price": 14.99,
-    "image": "images/lucky-emma.jpg"
+    "image": "images/prize4.png"
   },
   {
     "code": "C3",
     "name": "UKI",
     "series": "Sweet Girl",
     "price": 14.99,
-    "image": "images/uki.jpg"
+    "image": "images/prize2.png"
   }
 ]
