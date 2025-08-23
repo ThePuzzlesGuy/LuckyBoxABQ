@@ -7,77 +7,94 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml"/>
   <link rel="stylesheet" href="style.css"/>
 </head>
-<body class="theme-lucky">
+<body>
   <header class="header">
-    <img src="logo.svg" alt="Lucky Box logo"/>
+    <img src="logo.svg" alt="Lucky Box logo" />
     <div class="brand">LUCKY BOX</div>
     <div class="spacer"></div>
   </header>
 
-  <main class="machine3">
+  <!-- MACHINE -->
+  <main class="machine">
+    <!-- LEFT: 3x3 WINDOW -->
     <section class="window">
       <div class="window-header">
-        <img src="logo.svg" alt="Lucky Box" class="window-logo"/>
+        <img src="logo.svg" class="window-logo" alt="Lucky Box"/>
         <h1>LUCKY<br/>BOX</h1>
       </div>
-      <div class="grid" aria-label="vending grid"></div>
+      <div class="grid" aria-label="in-stock grid"></div>
     </section>
 
+    <!-- MIDDLE: SCREEN + CONTROLS + CART SCREEN -->
     <section class="console">
-      <div class="mini-screen" title="Tap to add shown item"><div class="label"></div></div>
-      <div class="mini-keys"><button class="nav prev" aria-label="Previous">◀</button><button class="nav next" aria-label="Next">▶</button></div>
-      <p class="mini-hint">Tap the screen to add the shown item to your cart.</p>
-      <button class="coin" title="Checkout">$</button>
-      <div class="cart-screen">
-  <div class="cart-label">YOUR CART</div>
-  <div class="cart-display">
-    <div class="label"></div>
-    <button class="overlay prev" aria-label="Previous">◀</button>
-    <div class="overlay qty">
-      <button class="minus" aria-label="Decrease">−</button>
-      <span class="cqty">1</span>
-      <button class="plus" aria-label="Increase">＋</button>
-    </div>
-    <button class="overlay next" aria-label="Next">▶</button>
-  </div>
-</div>
-  <div class="cart-display"><div class="label"></div></div>
-  <div class="cart-controls">
-    <button class="cprev" aria-label="Previous">◀</button>
-    <div class="qty">
-      <button class="cminus" aria-label="Decrease">−</button>
-      <span class="cqty">0</span>
-      <button class="cplus" aria-label="Increase">＋</button>
-    </div>
-    <button class="cnext" aria-label="Next">▶</button>
-  </div>
-</div><div class="tray-row" id="tray-row"></div></div>
-      <div class="total-line">Total <strong id="reader-total">$0.00</strong></div>
+      <!-- Choice screen (tap to add) -->
+      <div class="screen" id="choice-screen" title="Tap to add">
+        <div class="label"></div>
+      </div>
+      <div class="screen-controls">
+        <button id="prev">◀</button>
+        <button id="next">▶</button>
+      </div>
+      <p class="hint">Tap the screen to add the shown item to your cart.</p>
+
+      <button id="checkout" class="coin" title="Checkout">$</button>
+
+      <!-- Cart as its own screen (single-item carousel) -->
+      <div class="cart-box">
+        <div class="cart-title">YOUR CART</div>
+        <div class="screen cart-screen" id="cart-screen">
+          <div class="label"></div>
+          <button class="overlay o-prev" aria-label="Prev">◀</button>
+          <div class="overlay o-qty">
+            <button class="o-minus" aria-label="Minus">−</button>
+            <span class="qty">0</span>
+            <button class="o-plus" aria-label="Plus">＋</button>
+          </div>
+          <button class="overlay o-next" aria-label="Next">▶</button>
+        </div>
+      </div>
+
+      <div class="total">Total <strong id="total">$0.00</strong></div>
     </section>
 
-    <aside class="case4">
-      <div class="case-slot"><img src="images/prize1.png" alt="Prize 1"/></div>
-      <div class="case-slot"><img src="images/prize2.png" alt="Prize 2"/></div>
-      <div class="case-slot"><img src="images/prize3.png" alt="Prize 3"/></div>
-      <div class="case-slot"><img src="images/prize4.png" alt="Prize 4"/></div>
+    <!-- RIGHT: 4 PRIZE SHELVES -->
+    <aside class="prize-case">
+      <div class="shelf"><img src="images/prize1.png" alt="Prize 1"/></div>
+      <div class="shelf"><img src="images/prize2.png" alt="Prize 2"/></div>
+      <div class="shelf"><img src="images/prize3.png" alt="Prize 3"/></div>
+      <div class="shelf"><img src="images/prize4.png" alt="Prize 4"/></div>
     </aside>
   </main>
 
+  <!-- CHECKOUT DRAWER (delivery only) -->
   <div class="drawer" role="dialog" aria-modal="true">
     <div class="sheet">
       <button class="close" aria-label="Close">✕</button>
       <h2>Checkout</h2>
-      <p>Enter your info for delivery. We’ll reach out if we need anything else and confirm drop-off timing.</p>
       <form name="order" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="form" action="/thanks.html">
         <input type="hidden" name="form-name" value="order"/>
         <p style="display:none"><label>Don’t fill this out if you’re human: <input name="bot-field"/></label></p>
-        <div class="row"><p><label>Name<br/><input type="text" name="name" required/></label></p><p><label>Email<br/><input type="email" name="email" required/></label></p></div>
-        <div class="row"><p><label>Phone (for delivery)<br/><input type="tel" name="phone"/></label></p><p><label>Address Line 1<br/><input type="text" name="address1" required/></label></p></div>
-        <div class="row"><p><label>Address Line 2 (optional)<br/><input type="text" name="address2"/></label></p><p><label>City<br/><input type="text" name="city" required/></label></p></div>
-        <div class="row"><p><label>State<br/><input type="text" name="state" required/></label></p><p><label>ZIP Code<br/><input type="text" name="zip" required/></label></p></div>
-        <p><label>Notes (optional)<br/><textarea name="notes" rows="3" placeholder="Any preferences or special requests?"></textarea></label></p>
-        <textarea id="order-items" name="items" style="display:none"></textarea>
+
+        <div class="row">
+          <p><label>Name<br/><input type="text" name="name" required></label></p>
+          <p><label>Email<br/><input type="email" name="email" required></label></p>
+        </div>
+        <div class="row">
+          <p><label>Phone<br/><input type="tel" name="phone"></label></p>
+          <p><label>Address Line 1<br/><input type="text" name="address1" required></label></p>
+        </div>
+        <div class="row">
+          <p><label>Address Line 2<br/><input type="text" name="address2"></label></p>
+          <p><label>City<br/><input type="text" name="city" required></label></p>
+        </div>
+        <div class="row">
+          <p><label>State<br/><input type="text" name="state" required></label></p>
+          <p><label>ZIP<br/><input type="text" name="zip" required></label></p>
+        </div>
+
+        <textarea id="order-items" name="items" hidden></textarea>
         <input id="order-total" type="hidden" name="total"/>
+
         <button class="submit" type="submit">Submit Order</button>
       </form>
     </div>
