@@ -5,7 +5,7 @@ let SELECTED_INDEX = 0;
 document.addEventListener('DOMContentLoaded', init);
 
 async function init(){
-  PRODUCTS = await fetch('products.json').then(r=>r.json());
+  try{ PRODUCTS = await fetch('products.json').then(r=>r.json()); }catch(e){ PRODUCTS = PRODUCTS||[]; }
   renderGrid(PRODUCTS);
   restoreCart();
   renderTotal(); renderCartScreen();
@@ -40,9 +40,9 @@ function buildCarousel(){
   scr.addEventListener('click', ()=>{ const p = PRODUCTS[SELECTED_INDEX]; if(p) addToCart(p.code,1); });
   const prev = document.querySelector('.mini-keys .prev');
   const next = document.querySelector('.mini-keys .next');
-  prev.addEventListener('click', ()=>{ SELECTED_INDEX = (SELECTED_INDEX-1+PRODUCTS.length)%PRODUCTS.length; renderCarousel(); });
-  next.addEventListener('click', ()=>{ SELECTED_INDEX = (SELECTED_INDEX+1)%PRODUCTS.length; renderCarousel(); });
-  renderCarousel();
+  prev.addEventListener('click', ()=>{ SELECTED_INDEX = (SELECTED_INDEX-1+PRODUCTS.length)%PRODUCTS.length; if(PRODUCTS && PRODUCTS.length){ renderCarousel(); } });
+  next.addEventListener('click', ()=>{ SELECTED_INDEX = (SELECTED_INDEX+1)%PRODUCTS.length; if(PRODUCTS && PRODUCTS.length){ renderCarousel(); } });
+  if(PRODUCTS && PRODUCTS.length){ renderCarousel(); }
 }
 function renderCarousel(){
   const p = PRODUCTS[SELECTED_INDEX]; const scr = document.querySelector('.mini-screen');

@@ -57,3 +57,6 @@ body{ margin:0; background:var(--bg); color:var(--text); font:16px/1.4 Inter, sy
 .cart-display .overlay.qty{ left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:10px; padding:6px 10px }
 .cart-display .overlay.qty .cqty{ min-width:28px; text-align:center; font-weight:900 }
 .cart-display .overlay.qty .minus,.cart-display .overlay.qty .plus{ width:28px; height:28px; border-radius:8px; background:#0f1420; color:#e7eefc; border:0 }
+
+.mini-screen{ height:200px !important; }
+.cart-display{ height:200px !important; }
