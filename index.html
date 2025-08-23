@@ -28,7 +28,19 @@
       <div class="mini-keys"><button class="nav prev" aria-label="Previous">◀</button><button class="nav next" aria-label="Next">▶</button></div>
       <p class="mini-hint">Tap the screen to add the shown item to your cart.</p>
       <button class="coin" title="Checkout">$</button>
-      <div class="cart-window"><div class="cart-title">YOUR CART</div><div class="tray-row" id="tray-row"></div></div>
+      <div class="cart-screen">
+  <div class="cart-label">YOUR CART</div>
+  <div class="cart-display"><div class="label"></div></div>
+  <div class="cart-controls">
+    <button class="cprev" aria-label="Previous">◀</button>
+    <div class="qty">
+      <button class="cminus" aria-label="Decrease">−</button>
+      <span class="cqty">0</span>
+      <button class="cplus" aria-label="Increase">＋</button>
+    </div>
+    <button class="cnext" aria-label="Next">▶</button>
+  </div>
+</div><div class="tray-row" id="tray-row"></div></div>
       <div class="total-line">Total <strong id="reader-total">$0.00</strong></div>
     </section>
 
