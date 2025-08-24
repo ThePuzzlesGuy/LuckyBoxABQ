@@ -7,13 +7,15 @@ document.addEventListener('DOMContentLoaded', init);
 
 async function init(){
   try {
-    PRODUCTS = await fetch('products.json').then(r => r.json());
+    // cache-bust to avoid stale JSON while iterating
+    const res = await fetch('./products.json?ts=' + Date.now());
+    PRODUCTS = await res.json();
   } catch (e) {
+    console.error('Failed to load products.json', e);
     PRODUCTS = [];
   }
 
   if (PRODUCTS.length === 0) {
-    // Fail-safe placeholder so the UI still renders
     PRODUCTS = [{
       code: 'DEMO',
       name: 'Sample Item',
@@ -28,33 +30,39 @@ async function init(){
   renderTotal();
   buildChoiceCarousel();
 
-  // checkout (coin) from middle column
-  document.getElementById('checkout').addEventListener('click', () => {
-    if (cart.size === 0) { alert('Add at least one item first.'); return; }
-    openDrawer();
-  });
+  const coin = document.getElementById('checkout');
+  if (coin) {
+    coin.addEventListener('click', () => {
+      if (cart.size === 0) { alert('Add at least one item first.'); return; }
+      openDrawer();
+    });
+  }
 
-  // slide-out cart panel events
   wireCartPanel();
 
-  // panel checkout mirrors same action
-  document.getElementById('panel-checkout').addEventListener('click', () => {
-    if (cart.size === 0) { alert('Add at least one item first.'); return; }
-    closeCartPanel();
-    openDrawer();
-  });
+  const pcoin = document.getElementById('panel-checkout');
+  if (pcoin) {
+    pcoin.addEventListener('click', () => {
+      if (cart.size === 0) { alert('Add at least one item first.'); return; }
+      closeCartPanel();
+      openDrawer();
+    });
+  }
 
-  // drawer close
-  document.querySelector('.drawer').addEventListener('click', (e) => {
-    if (e.target.classList.contains('drawer') || e.target.classList.contains('close')) {
-      closeDrawer();
-    }
-  });
+  const drawer = document.querySelector('.drawer');
+  if (drawer) {
+    drawer.addEventListener('click', (e) => {
+      if (e.target.classList.contains('drawer') || e.target.classList.contains('close')) {
+        closeDrawer();
+      }
+    });
+  }
 }
 
 /* ---------- LEFT GRID ---------- */
 function renderGrid(list){
   const grid = document.querySelector('.grid');
+  if (!grid) return;
   grid.innerHTML = '';
   list.slice(0, 9).forEach(p => {
     const card = document.createElement('article');
@@ -62,8 +70,8 @@ function renderGrid(list){
     card.innerHTML = `
       <div class="img" style="background-image:url('${p.image}')"></div>
       <div class="meta">
-        <div class="title">${escape(p.name)}</div>
-        <div class="series">${escape(p.series || '')}</div>
+        <div class="title">${escapeHTML(p.name)}</div>
+        <div class="series">${escapeHTML(p.series || '')}</div>
         <div class="row"><div class="price">$${p.price.toFixed(2)}</div><div></div></div>
       </div>
     `;
@@ -78,16 +86,18 @@ function buildChoiceCarousel(){
 
   renderChoice();
 
-  document.getElementById('prev').addEventListener('click', () => {
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+
+  if (prev) prev.addEventListener('click', () => {
     SELECTED_INDEX = (SELECTED_INDEX - 1 + PRODUCTS.length) % PRODUCTS.length;
     renderChoice();
   });
-  document.getElementById('next').addEventListener('click', () => {
+  if (next) next.addEventListener('click', () => {
     SELECTED_INDEX = (SELECTED_INDEX + 1) % PRODUCTS.length;
     renderChoice();
   });
 
-  // tap to add
   screen.addEventListener('click', () => {
     const p = PRODUCTS[SELECTED_INDEX];
     addToCart(p.code, 1);
@@ -99,7 +109,8 @@ function renderChoice(){
   const screen = document.getElementById('choice-screen');
   if (!p || !screen) return;
   screen.style.backgroundImage = `url('${p.image}')`;
-  screen.querySelector('.label').textContent = p.name;
+  const label = screen.querySelector('.label');
+  if (label) label.textContent = p.name;
 }
 
 /* ---------- CART LOGIC ---------- */
@@ -111,7 +122,7 @@ function addToCart(code, qty=1){
   cart.set(code, curr);
   persistCart();
   renderTotal();
-  renderCartPanel(); // updates panel view if open
+  renderCartPanel();
 }
 
 function changeQty(code, delta){
@@ -161,13 +172,14 @@ function restoreCart(){
 }
 
 /* ---------- DRAWER ---------- */
-function openDrawer(){ document.querySelector('.drawer').classList.add('open'); }
-function closeDrawer(){ document.querySelector('.drawer').classList.remove('open'); }
+function openDrawer(){ const d=document.querySelector('.drawer'); if(d) d.classList.add('open'); }
+function closeDrawer(){ const d=document.querySelector('.drawer'); if(d) d.classList.remove('open'); }
 
 /* ---------- CART PANEL (flap + slide out) ---------- */
 function wireCartPanel(){
   const flap = document.getElementById('cart-flap');
   const panel = document.getElementById('cart-panel');
+  if (!flap || !panel) return;
   const closeBtn = panel.querySelector('.close-cart');
 
   const open = () => {
@@ -188,9 +200,8 @@ function wireCartPanel(){
   flap.addEventListener('keydown', e=>{
     if(e.key==='Enter' || e.key===' '){ e.preventDefault(); open(); }
   });
-  closeBtn.addEventListener('click', close);
+  if (closeBtn) closeBtn.addEventListener('click', close);
 
-  // click outside to close
   document.addEventListener('click', (e)=>{
     if(!panel.classList.contains('open')) return;
     if(!panel.contains(e.target) && e.target !== flap && !flap.contains(e.target)){
@@ -198,14 +209,13 @@ function wireCartPanel(){
     }
   });
 
-  // expose for other functions
   window.closeCartPanel = close;
 }
 
 function renderCartPanel(){
   const wrap = document.getElementById('cart-items');
-  const items = Array.from(cart.values());
   if (!wrap) return;
+  const items = Array.from(cart.values());
 
   if (items.length === 0){
     wrap.innerHTML = `<div class="ci-empty">Cart is empty.</div>`;
@@ -216,7 +226,7 @@ function renderCartPanel(){
     <div class="ci">
       <img src="${x.product.image}" alt="">
       <div class="ci-meta">
-        <div class="ci-title">${escape(x.product.name)}</div>
+        <div class="ci-title">${escapeHTML(x.product.name)}</div>
         <div class="ci-price">$${x.product.price.toFixed(2)}</div>
       </div>
       <div class="ci-qty">
@@ -237,4 +247,4 @@ function renderCartPanel(){
 }
 
 /* ---------- utils ---------- */
-function escape(s){ return String(s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+function escapeHTML(s){ return String(s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
