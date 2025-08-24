@@ -1,8 +1,7 @@
+// ------------ DATA & STATE ------------
 let PRODUCTS = [];
 const cart = new Map();            // code -> { product, qty }
 let SELECTED_INDEX = 0;            // choice carousel index
-let CART_KEYS = [];                // codes currently in cart
-let CART_INDEX = 0;                // cart carousel index
 
 document.addEventListener('DOMContentLoaded', init);
 
@@ -27,15 +26,25 @@ async function init(){
   renderGrid(PRODUCTS);
   restoreCart();
   renderTotal();
-
   buildChoiceCarousel();
-  buildCartCarousel();
 
+  // checkout (coin) from middle column
   document.getElementById('checkout').addEventListener('click', () => {
     if (cart.size === 0) { alert('Add at least one item first.'); return; }
     openDrawer();
   });
 
+  // slide-out cart panel events
+  wireCartPanel();
+
+  // panel checkout mirrors same action
+  document.getElementById('panel-checkout').addEventListener('click', () => {
+    if (cart.size === 0) { alert('Add at least one item first.'); return; }
+    closeCartPanel();
+    openDrawer();
+  });
+
+  // drawer close
   document.querySelector('.drawer').addEventListener('click', (e) => {
     if (e.target.classList.contains('drawer') || e.target.classList.contains('close')) {
       closeDrawer();
@@ -67,10 +76,8 @@ function buildChoiceCarousel(){
   const screen = document.getElementById('choice-screen');
   if (!screen) return;
 
-  // initial render
   renderChoice();
 
-  // nav
   document.getElementById('prev').addEventListener('click', () => {
     SELECTED_INDEX = (SELECTED_INDEX - 1 + PRODUCTS.length) % PRODUCTS.length;
     renderChoice();
@@ -95,58 +102,6 @@ function renderChoice(){
   screen.querySelector('.label').textContent = p.name;
 }
 
-/* ---------- CART as a screen ---------- */
-function syncCartKeys(){
-  CART_KEYS = Array.from(cart.keys());
-  if (CART_INDEX >= CART_KEYS.length) CART_INDEX = Math.max(0, CART_KEYS.length - 1);
-}
-
-function buildCartCarousel(){
-  const cs = document.getElementById('cart-screen');
-  if (!cs) return;
-
-  cs.querySelector('.o-prev').addEventListener('click', () => {
-    if (!CART_KEYS.length) return;
-    CART_INDEX = (CART_INDEX - 1 + CART_KEYS.length) % CART_KEYS.length;
-    renderCartScreen();
-  });
-  cs.querySelector('.o-next').addEventListener('click', () => {
-    if (!CART_KEYS.length) return;
-    CART_INDEX = (CART_INDEX + 1) % CART_KEYS.length;
-    renderCartScreen();
-  });
-  cs.querySelector('.o-plus').addEventListener('click', () => {
-    const code = CART_KEYS[CART_INDEX];
-    if (code) changeQty(code, +1);
-  });
-  cs.querySelector('.o-minus').addEventListener('click', () => {
-    const code = CART_KEYS[CART_INDEX];
-    if (code) changeQty(code, -1);
-  });
-
-  renderCartScreen();
-}
-
-function renderCartScreen(){
-  syncCartKeys();
-  const cs = document.getElementById('cart-screen');
-  const qtyEl = cs.querySelector('.qty');
-  const labelEl = cs.querySelector('.label');
-
-  if (CART_KEYS.length === 0){
-    cs.style.backgroundImage = 'none';
-    labelEl.textContent = 'Cart is empty';
-    qtyEl.textContent = '0';
-    return;
-  }
-
-  const code = CART_KEYS[CART_INDEX];
-  const item = cart.get(code);
-  cs.style.backgroundImage = `url('${item.product.image}')`;
-  labelEl.textContent = item.product.name;
-  qtyEl.textContent = item.qty;
-}
-
 /* ---------- CART LOGIC ---------- */
 function addToCart(code, qty=1){
   const p = PRODUCTS.find(x => x.code === code);
@@ -156,7 +111,7 @@ function addToCart(code, qty=1){
   cart.set(code, curr);
   persistCart();
   renderTotal();
-  renderCartScreen();
+  renderCartPanel(); // updates panel view if open
 }
 
 function changeQty(code, delta){
@@ -166,14 +121,15 @@ function changeQty(code, delta){
   if (curr.qty <= 0) cart.delete(code);
   persistCart();
   renderTotal();
-  renderCartScreen();
+  renderCartPanel();
 }
 
 function renderTotal(){
-  const el = document.getElementById('total');
-  let t = 0;
-  for (const [, item] of cart) t += item.product.price * item.qty;
-  el.textContent = '$' + t.toFixed(2);
+  const tot = [...cart.values()].reduce((s, x) => s + x.product.price * x.qty, 0);
+  const flapTotal = document.getElementById('total');
+  if (flapTotal) flapTotal.textContent = '$' + tot.toFixed(2);
+  const panelTotal = document.getElementById('total-panel');
+  if (panelTotal) panelTotal.textContent = '$' + tot.toFixed(2);
 
   // payload for Netlify form
   const payload = Array.from(cart.values()).map(x => ({
@@ -183,11 +139,13 @@ function renderTotal(){
     price: x.product.price,
     qty: x.qty
   }));
-  document.getElementById('order-items').value = JSON.stringify(payload, null, 2);
-  document.getElementById('order-total').value = '$' + t.toFixed(2);
+  const itemsField = document.getElementById('order-items');
+  const totalField = document.getElementById('order-total');
+  if (itemsField) itemsField.value = JSON.stringify(payload, null, 2);
+  if (totalField) totalField.value = '$' + tot.toFixed(2);
 }
 
-/* ---------- STORAGE & DRAWER ---------- */
+/* ---------- STORAGE ---------- */
 function persistCart(){
   const arr = Array.from(cart.values()).map(x => ({ code: x.product.code, qty: x.qty }));
   localStorage.setItem('luckybox_cart', JSON.stringify(arr));
@@ -202,8 +160,81 @@ function restoreCart(){
   }catch(e){}
 }
 
+/* ---------- DRAWER ---------- */
 function openDrawer(){ document.querySelector('.drawer').classList.add('open'); }
 function closeDrawer(){ document.querySelector('.drawer').classList.remove('open'); }
+
+/* ---------- CART PANEL (flap + slide out) ---------- */
+function wireCartPanel(){
+  const flap = document.getElementById('cart-flap');
+  const panel = document.getElementById('cart-panel');
+  const closeBtn = panel.querySelector('.close-cart');
+
+  const open = () => {
+    renderCartPanel();
+    panel.classList.add('open');
+    panel.setAttribute('aria-hidden','false');
+    flap.setAttribute('aria-expanded','true');
+    flap.classList.add('open');
+  };
+  const close = () => {
+    panel.classList.remove('open');
+    panel.setAttribute('aria-hidden','true');
+    flap.setAttribute('aria-expanded','false');
+    flap.classList.remove('open');
+  };
+
+  flap.addEventListener('click', open);
+  flap.addEventListener('keydown', e=>{
+    if(e.key==='Enter' || e.key===' '){ e.preventDefault(); open(); }
+  });
+  closeBtn.addEventListener('click', close);
+
+  // click outside to close
+  document.addEventListener('click', (e)=>{
+    if(!panel.classList.contains('open')) return;
+    if(!panel.contains(e.target) && e.target !== flap && !flap.contains(e.target)){
+      close();
+    }
+  });
+
+  // expose for other functions
+  window.closeCartPanel = close;
+}
+
+function renderCartPanel(){
+  const wrap = document.getElementById('cart-items');
+  const items = Array.from(cart.values());
+  if (!wrap) return;
+
+  if (items.length === 0){
+    wrap.innerHTML = `<div class="ci-empty">Cart is empty.</div>`;
+    return;
+  }
+
+  wrap.innerHTML = items.map(x => `
+    <div class="ci">
+      <img src="${x.product.image}" alt="">
+      <div class="ci-meta">
+        <div class="ci-title">${escape(x.product.name)}</div>
+        <div class="ci-price">$${x.product.price.toFixed(2)}</div>
+      </div>
+      <div class="ci-qty">
+        <button class="minus" data-id="${x.product.code}">−</button>
+        <span>${x.qty}</span>
+        <button class="plus" data-id="${x.product.code}">＋</button>
+      </div>
+    </div>
+  `).join('');
+
+  wrap.querySelectorAll('.minus,.plus').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      const id = e.currentTarget.dataset.id;
+      const delta = e.currentTarget.classList.contains('plus') ? 1 : -1;
+      changeQty(id, delta);
+    });
+  });
+}
 
 /* ---------- utils ---------- */
 function escape(s){ return String(s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
