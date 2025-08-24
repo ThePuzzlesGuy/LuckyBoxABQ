@@ -1,8 +1,14 @@
 [build]
   publish = "."
-  command = ""
+  command = "echo 'no build step'"
 
 [[redirects]]
   from = "/success"
   to = "/thanks.html"
   status = 301
+
+# (optional) keep JSON from being aggressively cached during iteration
+[[headers]]
+  for = "/products.json"
+  [headers.values]
+  Cache-Control = "no-store"
