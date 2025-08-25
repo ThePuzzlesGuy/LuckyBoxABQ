@@ -25,7 +25,7 @@
       <div class="grid" aria-label="in-stock grid"></div>
     </section>
 
-    <!-- MIDDLE: SCREEN + CONTROLS + CART SCREEN -->
+    <!-- MIDDLE: SCREEN + CONTROLS + FLAP -->
     <section class="console">
       <!-- Choice screen (tap to add) -->
       <div class="screen" id="choice-screen" title="Tap to add">
@@ -37,26 +37,14 @@
       </div>
       <p class="hint">Tap the screen to add the shown item to your cart.</p>
 
-      <button id="checkout" class="coin" title="Checkout">$</button>
-
-<div class="cart-box">
-  <div class="cart-title">YOUR CART</div>
-  <div class="screen cart-screen" id="cart-screen">
-    <div class="label"></div>
-    <button class="overlay o-prev" aria-label="Prev">◀</button>
-    <div class="overlay o-qty">
-      <button class="o-minus" aria-label="Minus">−</button>
-      <span class="qty">0</span>
-      <button class="o-plus" aria-label="Plus">＋</button>
-    </div>
-    <button class="overlay o-next" aria-label="Next">▶</button>
-  </div>
-  <!-- total INSIDE the cart box -->
-  <div class="cart-total">Total <strong id="total">$0.00</strong></div>
-</div>
-
-
-      <div class="total">Total <strong id="total">$0.00</strong></div>
+      <!-- Claw-machine door flap -->
+      <div class="flap-slot">
+        <button id="flap" class="flap" aria-haspopup="dialog" aria-controls="cart-drawer">
+          <span class="flap-text">
+            PUSH TO COLLECT<br/>YOUR PRIZES!
+          </span>
+        </button>
+      </div>
     </section>
 
     <!-- RIGHT: 4 PRIZE SHELVES -->
@@ -68,11 +56,31 @@
     </aside>
   </main>
 
-  <!-- CHECKOUT DRAWER (delivery only) -->
-  <div class="drawer" role="dialog" aria-modal="true">
+  <!-- CART DRAWER -->
+  <div class="drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+    <div class="sheet cart-sheet">
+      <button class="close" data-close="#cart-drawer" aria-label="Close">✕</button>
+      <h2 id="cart-title">Your Prizes</h2>
+
+      <ul class="cart-list" id="cart-list" aria-live="polite"></ul>
+
+      <div class="cart-footer">
+        <div class="cart-total">
+          Total <strong id="total">$0.00</strong>
+        </div>
+        <div class="cart-actions">
+          <button class="btn ghost" data-close="#cart-drawer">Keep Browsing</button>
+          <button class="btn primary" id="open-checkout">Checkout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKOUT DRAWER -->
+  <div class="drawer" id="checkout-drawer" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
     <div class="sheet">
-      <button class="close" aria-label="Close">✕</button>
-      <h2>Checkout</h2>
+      <button class="close" data-close="#checkout-drawer" aria-label="Close">✕</button>
+      <h2 id="checkout-title">Checkout</h2>
       <form name="order" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="form" action="/thanks.html">
         <input type="hidden" name="form-name" value="order"/>
         <p style="display:none"><label>Don’t fill this out if you’re human: <input name="bot-field"/></label></p>
@@ -94,6 +102,7 @@
           <p><label>ZIP<br/><input type="text" name="zip" required></label></p>
         </div>
 
+        <!-- Populated by script -->
         <textarea id="order-items" name="items" hidden></textarea>
         <input id="order-total" type="hidden" name="total"/>
 
