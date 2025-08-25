@@ -24,19 +24,23 @@
       <div class="grid" aria-label="in-stock grid"></div>
     </section>
 
-    <!-- MIDDLE: COMBINED SELECTION SCREEN (with built-in arrows) + FLAP -->
+    <!-- MIDDLE: COMBINED SELECTION SCREEN + FLAP -->
     <section class="console">
-      <!-- Selection screen: click image area to add; use bar arrows to cycle -->
-      <div class="screen" id="choice-screen" title="Tap the image to add to cart">
+      <div class="screen" id="choice-screen" title="Add to cart">
         <div class="label"></div>
-        <div class="screen-nav" aria-label="Change selection">
+        <div class="screen-nav" aria-label="Selection controls">
           <button id="nav-prev" class="nav-btn" aria-label="Previous">◀</button>
-          <span class="nav-hint">Tap image to add • Use arrows to browse</span>
+
+          <button id="add-btn" class="add-btn" aria-label="Add to cart" title="Add to cart">
+            <!-- cart icon -->
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+              <path d="M7 4h-2a1 1 0 0 0 0 2h1.2l1.6 8.5A2 2 0 0 0 9.77 16h7.96a2 2 0 0 0 1.98-1.67l1.06-6.4A1 1 0 0 0 19.79 6H8.32l-.2-1.03A1.5 1.5 0 0 0 6.67 4H7Zm2.08 12.5a1.75 1.75 0 1 0 0 3.5 1.75 1.75 0 0 0 0-3.5Zm7.5 0a1.75 1.75 0 1 0 0 3.5 1.75 1.75 0 0 0 0-3.5Z" fill="currentColor"/>
+            </svg>
+          </button>
+
           <button id="nav-next" class="nav-btn" aria-label="Next">▶</button>
         </div>
       </div>
-
-      <p class="hint">Tap the big image to add the shown item to your cart.</p>
 
       <!-- Claw-machine door flap -->
       <div class="flap-slot">
