@@ -1,6 +1,6 @@
 let PRODUCTS = [];
 const cart = new Map();            // code -> { product, qty }
-let SELECTED_INDEX = 0;            // choice carousel index
+let SELECTED_INDEX = 0;            // selection index
 
 document.addEventListener('DOMContentLoaded', init);
 
@@ -25,12 +25,12 @@ async function init(){
   renderGrid(PRODUCTS);
   restoreCart();
   renderTotal();
-  buildChoiceCarousel();
+  buildSelectionScreen();
 
   // Flap -> open cart drawer
   document.getElementById('flap').addEventListener('click', () => {
     openDrawer('#cart-drawer');
-    renderCartList(); // refresh
+    renderCartList();
   });
 
   // Drawer close buttons
@@ -71,29 +71,33 @@ function renderGrid(list){
   });
 }
 
-/* ---------- CHOICE SCREEN (tap to add) ---------- */
-function buildChoiceCarousel(){
+/* ---------- SELECTION SCREEN (combined with arrows) ---------- */
+function buildSelectionScreen(){
   const screen = document.getElementById('choice-screen');
   if (!screen) return;
 
   // initial render
   renderChoice();
 
-  // nav
-  document.getElementById('prev').addEventListener('click', () => {
+  // internal nav buttons (in the bottom bar)
+  document.getElementById('nav-prev').addEventListener('click', (e) => {
+    e.stopPropagation(); // keep from adding to cart
     SELECTED_INDEX = (SELECTED_INDEX - 1 + PRODUCTS.length) % PRODUCTS.length;
     renderChoice();
   });
-  document.getElementById('next').addEventListener('click', () => {
+  document.getElementById('nav-next').addEventListener('click', (e) => {
+    e.stopPropagation();
     SELECTED_INDEX = (SELECTED_INDEX + 1) % PRODUCTS.length;
     renderChoice();
   });
 
-  // tap to add
-  screen.addEventListener('click', () => {
+  // tap the image area anywhere (except the bottom bar buttons) to add
+  screen.addEventListener('click', (e) => {
+    // ignore clicks originating from the bottom bar buttons
+    if (e.target.closest('.screen-nav')) return;
     const p = PRODUCTS[SELECTED_INDEX];
     addToCart(p.code, 1);
-    flyToFlap(p); // <-- new feedback animation
+    flyToFlap(p);
   });
 }
 
@@ -110,7 +114,7 @@ function flyToFlap(product){
   const flap = document.getElementById('flap');
   if (!flap) return;
 
-  // start element: try grid card image; fallback to choice screen
+  // start element: try grid card image; fallback to selection screen
   const startEl =
     document.querySelector(`.card[data-code="${cssEscape(product.code)}"] .img`)
     || document.getElementById('choice-screen');
@@ -121,21 +125,20 @@ function flyToFlap(product){
   const startCx = start.left + start.width / 2;
   const startCy = start.top + start.height / 2;
   const endCx = target.left + target.width / 2;
-  const endCy = target.top + target.height * 0.35; // towards the upper face
+  const endCy = target.top + target.height * 0.35; // upper face of the flap
 
   const ghost = document.createElement('img');
   ghost.className = 'fly-ghost';
   ghost.src = product.image;
-  ghost.style.left = (startCx - 43) + 'px'; // center ~86px wide
+  ghost.style.left = (startCx - 43) + 'px';
   ghost.style.top  = (startCy - 43) + 'px';
   document.body.appendChild(ghost);
 
-  // flap peek
+  // flap peek while landing
   flap.classList.add('peek');
   ghost.animate(
     [
       { transform: 'translate(0,0) scale(1) rotate(0deg)', offset: 0 },
-      // arc downward a bit then up toward flap
       { transform: `translate(${(endCx-startCx)*0.5}px, ${Math.max(120, endCy-startCy)*0.6}px) scale(.9) rotate(6deg)`, offset: .45 },
       { transform: `translate(${endCx-startCx}px, ${endCy-startCy}px) scale(.35) rotate(12deg)`, offset: 1 }
     ],
@@ -178,12 +181,9 @@ function renderCartList(){
         <button class="remove btn ghost" style="padding:6px 10px">Remove</button>
       </div>
     `;
-
-    // qty controls
     li.querySelector('.plus').addEventListener('click', () => { changeQty(item.product.code, +1); renderCartList(); });
     li.querySelector('.minus').addEventListener('click', () => { changeQty(item.product.code, -1); renderCartList(); });
     li.querySelector('.remove').addEventListener('click', () => { setQty(item.product.code, 0); renderCartList(); });
-
     list.appendChild(li);
   }
 
@@ -228,7 +228,6 @@ function renderTotal(){
   for (const [, item] of cart) t += item.product.price * item.qty;
   el.textContent = '$' + t.toFixed(2);
 
-  // payload for Netlify form
   const payload = Array.from(cart.values()).map(x => ({
     code: x.product.code,
     name: x.product.name,
@@ -262,9 +261,4 @@ function closeDrawer(sel){ document.querySelector(sel).classList.remove('open');
 
 /* ---------- utils ---------- */
 function escape(s){ return String(s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
-
-/* Tiny CSS.escape polyfill for selectors using product codes */
-function cssEscape(id){
-  if (window.CSS && CSS.escape) return CSS.escape(id);
-  return String(id).replace(/[^a-zA-Z0-9_\-]/g, ch => '\\' + ch.charCodeAt(0).toString(16) + ' ');
-}
+function cssEscape(id){ if (window.CSS && CSS.escape) return CSS.escape(id); return String(id).replace(/[^a-zA-Z0-9_\-]/g, ch => '\\' + ch.charCodeAt(0).toString(16) + ' '); }
