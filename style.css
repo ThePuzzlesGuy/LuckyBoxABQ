@@ -7,6 +7,9 @@
   --panel:#0f141b;
   --btn:#2a2f39;
   --text:#111;
+
+  /* easy nudge control for the selection screen column */
+  --screen-offset: 34px;  /* increase to push the screen lower */
 }
 
 *{box-sizing:border-box}
@@ -82,10 +85,12 @@ body{
   display:grid;
   grid-template-rows:auto auto; /* screen, flap */
   gap:12px;
-  /* Move the whole middle column down a bit so the screen aligns with the flap */
-  padding-top: 14px;
+
+  /* Push the whole column down to line up with the flap */
+  padding-top: var(--screen-offset);
 }
 
+/* Screen */
 .screen{
   --bar-h: 52px;
   height:260px;
@@ -99,15 +104,22 @@ body{
   overflow:hidden;
   box-shadow:inset 0 0 0 2px rgba(0,0,0,.5);
   cursor:pointer;
-  /* drop the screen slightly to match the mock alignment */
-  margin-top: 12px;
+
+  /* small extra nudge (works even if a transform was previously present) */
+  margin-top: 8px;
 }
+
+/* If an older stylesheet set a translate on the id, kill it */
+#choice-screen{
+  transform: none !important;   /* <-- removes legacy translateY override */
+}
+
 .screen .label{
   position:absolute; left:10px; right:10px; top:10px;
   color:#fff; font-weight:900; text-shadow:0 2px 6px rgba(0,0,0,.6);
 }
 
-/* Bottom bar: perfectly centered control group */
+/* Bottom bar: centered control group */
 .screen .screen-nav{
   position:absolute; left:0; right:0; bottom:0;
   height:var(--bar-h);
@@ -122,7 +134,7 @@ body{
   color:#fff;
 }
 
-/* Make all three controls identical size so the middle looks visually centered */
+/* Same size for all three buttons so the center looks perfect */
 .nav-btn,
 .add-btn{
   width:46px;
@@ -138,8 +150,6 @@ body{
 }
 .nav-btn:active,
 .add-btn:active{ transform: translateY(1px); }
-
-/* Add button a bit more “pressable” */
 .add-btn{
   border-radius:50%;
   background: radial-gradient(120% 120% at 30% 25%, rgba(255,255,255,.35), rgba(255,255,255,0) 40%), #151823;
