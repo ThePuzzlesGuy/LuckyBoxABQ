@@ -79,7 +79,7 @@ function buildSelectionScreen(){
   // initial render
   renderChoice();
 
-  // nav buttons in the bar
+  // nav buttons
   document.getElementById('nav-prev').addEventListener('click', (e) => {
     e.stopPropagation();
     SELECTED_INDEX = (SELECTED_INDEX - 1 + PRODUCTS.length) % PRODUCTS.length;
@@ -91,7 +91,7 @@ function buildSelectionScreen(){
     renderChoice();
   });
 
-  // add button in the center
+  // add button
   document.getElementById('add-btn').addEventListener('click', (e) => {
     e.stopPropagation();
     const p = PRODUCTS[SELECTED_INDEX];
@@ -99,9 +99,9 @@ function buildSelectionScreen(){
     flyToFlap(p);
   });
 
-  // image click also adds (no text shown)
+  // clicking image adds, too
   screen.addEventListener('click', (e) => {
-    if (e.target.closest('.screen-nav')) return; // ignore button area
+    if (e.target.closest('.screen-nav')) return;
     const p = PRODUCTS[SELECTED_INDEX];
     addToCart(p.code, 1);
     flyToFlap(p);
