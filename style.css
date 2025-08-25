@@ -9,7 +9,7 @@
   --text:#111;
 
   /* tweakable layout knobs */
-  --screen-offset: 34px;      /* how much to drop the selection screen ONLY */
+  --screen-offset: 70px;      /* how much to drop the selection screen ONLY */
   --screen-flap-gap: 8px;     /* spacing between screen and flap */
 }
 
