@@ -1,9 +1,10 @@
+/* ========== THEME ========== */
 :root{
-  --yellow:#ebbe2d;
-  --accent:#d74824;
-  --black:#000;
-  --panel:#0f141b;
-  --btn:#2a2f39;
+  --yellow:#ebbe2d;     /* machine body */
+  --accent:#d74824;     /* brand red */
+  --black:#000;         /* bezel/border */
+  --panel:#0f141b;      /* dark panels */
+  --btn:#2a2f39;        /* button bg */
   --text:#111;
 }
 
@@ -11,7 +12,7 @@
 html,body{height:100%}
 img{max-width:100%;display:block}
 
-/* Base */
+/* ========== BASE ========== */
 body{
   margin:0;
   background:var(--yellow);
@@ -24,26 +25,31 @@ body{
 .header img{width:24px;height:24px}
 .brand{font-weight:900;letter-spacing:.08em}
 
-/* Machine frame */
+/* ========== MACHINE FRAME ========== */
 .machine{
   width:min(1200px,95vw);
   margin:20px auto 40px;
   display:grid;
-  grid-template-columns: 1.55fr .65fr .5fr;
+  grid-template-columns: 1.55fr .65fr .5fr; /* left / middle / right */
   gap:16px;
   background:var(--yellow);
   padding:18px;
   border-radius:18px;
-  box-shadow: inset 0 0 0 3px var(--black), 0 12px 40px rgba(0,0,0,.25);
+  box-shadow:
+    inset 0 0 0 3px var(--black),
+    0 12px 40px rgba(0,0,0,.25);
   position:relative;
 }
+/* feet */
 .machine::before,.machine::after{
-  content:""; position:absolute; bottom:-12px; width:120px; height:18px; background:#111; border-radius:8px;
+  content:"";
+  position:absolute; bottom:-12px;
+  width:120px; height:18px; background:#111; border-radius:8px;
 }
 .machine::before{left:40px}
 .machine::after{right:40px}
 
-/* Left display case */
+/* ========== LEFT: DISPLAY CASE (3x3) ========== */
 .window{
   background:var(--yellow);
   border:8px solid var(--black);
@@ -56,9 +62,15 @@ body{
 .window-header{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center}
 .window-logo{width:64px;height:64px}
 .window h1{margin:0;color:#fff;font-weight:900;line-height:.9;text-shadow:0 2px 0 rgba(0,0,0,.35)}
+
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .card{
-  background:#fff;border-radius:14px;overflow:hidden;display:grid;grid-template-rows:150px auto;box-shadow:0 1px 0 rgba(0,0,0,.08);
+  background:#fff;
+  border-radius:14px;
+  overflow:hidden;
+  display:grid;
+  grid-template-rows:150px auto;
+  box-shadow:0 1px 0 rgba(0,0,0,.08);
 }
 .card .img{background-size:cover;background-position:center}
 .card .meta{padding:10px}
@@ -67,63 +79,157 @@ body{
 .card .row{display:flex;justify-content:space-between;margin-top:6px}
 .card .price{font-weight:900}
 
-/* Middle column */
+/* ========== MIDDLE: CHOICE + CART ========== */
 .console{
   display:grid;
+  /* screen, controls, hint, coin, cart (includes total inside) */
   grid-template-rows:auto auto auto auto auto;
   gap:12px;
 }
-.screen{
-  height:200px;background:#000;border:8px solid var(--black);border-radius:10px;
-  background-size:cover;background-position:center;position:relative;display:block;
-}
-#choice-screen{cursor:pointer;transform:translateY(12px);}
-.screen .label{position:absolute;left:10px;right:10px;bottom:10px;color:#fff;font-weight:900;text-shadow:0 2px 6px rgba(0,0,0,.6)}
-.screen-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.screen-controls button{margin-top:5px;background:var(--btn);color:#fff;border:0;border-radius:10px;padding:10px 0;font-weight:800;cursor:pointer}
-.hint{margin:0 2px;font-size:12px;color:#3b2b00}
-.coin{height:48px;border:8px solid var(--black);border-radius:12px;background:#222;color:#ffd86a;font-weight:900;font-size:22px;cursor:pointer}
 
-/* Cart */
+/* shared screen style (choice & cart) */
+.screen{
+  height:200px; /* keep both equal */
+  background:#000;
+  border:8px solid var(--black);
+  border-radius:10px;
+  background-size:cover;
+  background-position:center;
+  position:relative;
+  display:block;
+}
+#choice-screen{
+  cursor:pointer;
+  transform: translateY(12px); /* nudges only the screen itself */
+}
+.screen .label{
+  position:absolute; left:10px; right:10px; bottom:10px;
+  color:#fff; font-weight:900; text-shadow:0 2px 6px rgba(0,0,0,.6);
+}
+
+/* arrows under choice screen */
+.screen-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.screen-controls button{
+  margin-top:5px;
+  background:var(--btn); color:#fff;
+  border:0; border-radius:10px; padding:10px 0;
+  font-weight:800; cursor:pointer;
+}
+
+/* copy/smaller note */
+.hint{margin:0 2px; font-size:12px; color:#3b2b00}
+
+/* coin / checkout */
+.coin{
+  height:48px;
+  border:8px solid var(--black);
+  border-radius:12px;
+  background:#222; color:#ffd86a;
+  font-weight:900; font-size:22px;
+  cursor:pointer;
+}
+
+/* ===== CART: title + screen packed at the very top ===== */
 .cart-box{
-  background:var(--yellow);border:8px solid var(--black);border-radius:12px;padding:10px;
-  display:grid;grid-template-rows:auto auto auto;gap:0;align-items:start;align-content:start;justify-content:stretch;align-self:start;
+  background:var(--yellow);
+  border:8px solid var(--black);
+  border-radius:12px;
+  padding:10px;
+  display:grid;
+  grid-template-rows:auto auto auto;  /* title, screen, total */
+  gap:0;                             /* no gap between title & screen */
+  align-items:start;
+  align-content:start;               /* pack tracks to the top */
+  justify-content:stretch;
+  align-self:start;                  /* item sits at top of the 1fr row in .console */
 }
-.cart-title{font-weight:900;margin:0;line-height:1}
+.cart-title{
+  font-weight:900;
+  margin:0;                           /* zero spacing around the text */
+  line-height:1;
+}
+
+/* cart screen + overlay controls (tight bezel) */
 .cart-screen{
-  height:200px;margin-top:0;background:#000;border:6px solid var(--black);border-radius:10px;background-size:cover;background-position:center;position:relative;
+  height:200px;                       /* equal with choice screen */
+  margin-top:0;                       /* sits right under the title */
+  background:#000;
+  border:6px solid var(--black);      /* tighter bezel that hugs image */
+  border-radius:10px;
+  background-size:cover;
+  background-position:center;
+  position:relative;
 }
-.cart-screen .overlay{position:absolute;bottom:10px;background:var(--btn);color:#fff;border:0;border-radius:10px;font-weight:800;padding:8px 12px;opacity:.95;cursor:pointer}
+.cart-screen .overlay{
+  position:absolute; bottom:10px;
+  background:var(--btn); color:#fff;
+  border:0; border-radius:10px; font-weight:800;
+  padding:8px 12px; opacity:.95; cursor:pointer;
+}
 .cart-screen .o-prev{left:10px}
 .cart-screen .o-next{right:10px}
-.cart-screen .o-qty{left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:6px 10px}
-.cart-screen .o-qty .qty{min-width:28px;text-align:center;font-weight:900}
-.cart-screen .o-qty .o-minus,.cart-screen .o-qty .o-plus{width:28px;height:28px;border-radius:8px;background:#0f1420;color:#e7eefc;border:0;cursor:pointer}
-.cart-total{text-align:center;font-weight:900;margin-top:8px}
+.cart-screen .o-qty{
+  left:50%; transform:translateX(-50%);
+  display:flex; align-items:center; gap:10px; padding:6px 10px;
+}
+.cart-screen .o-qty .qty{ min-width:28px; text-align:center; font-weight:900 }
+.cart-screen .o-qty .o-minus,
+.cart-screen .o-qty .o-plus{
+  width:28px; height:28px; border-radius:8px;
+  background:#0f1420; color:#e7eefc; border:0; cursor:pointer;
+}
 
-/* Right prize case */
-.prize-case{background:var(--yellow);border:8px solid var(--black);border-radius:12px;padding:10px;display:grid;grid-template-rows:repeat(4,1fr);gap:10px}
-.shelf{background:var(--panel);border-radius:8px;display:grid;place-items:center}
+/* total under cart screen */
+.cart-total{
+  text-align:center;
+  font-weight:900;
+  margin-top:8px;
+}
+
+
+/* ========== RIGHT: PRIZE CASE (4 shelves) ========== */
+.prize-case{
+  background:var(--yellow);
+  border:8px solid var(--black);
+  border-radius:12px;
+  padding:10px;
+  display:grid;
+  grid-template-rows:repeat(4,1fr);
+  gap:10px;
+}
+.shelf{
+  background:var(--panel);
+  border-radius:8px;
+  display:grid;
+  place-items:center;
+}
 .shelf img{max-width:90%;max-height:90%;object-fit:contain}
 
-/* Drawer */
-.drawer{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.6)}
+/* ========== DRAWER / FORM ========== */
+.drawer{position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,.6)}
 .drawer.open{display:grid}
-.sheet{width:min(720px,92vw);background:#0f141b;color:#fff;border-radius:16px;padding:24px;position:relative}
-.close{position:absolute;right:16px;top:12px;background:transparent;border:0;color:#fff;font-size:22px;cursor:pointer}
-.form .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.form input,.form textarea,.form select{width:100%;padding:10px;border-radius:10px;border:1px solid #283041;background:#0a0f16;color:#e7eefc}
-.submit{background:var(--accent);color:#fff;border:0;border-radius:10px;padding:12px;font-weight:900;cursor:pointer;width:100%}
+.sheet{
+  width:min(720px,92vw);
+  background:#0f141b; color:#fff;
+  border-radius:16px; padding:24px; position:relative;
+}
+.close{position:absolute; right:16px; top:12px; background:transparent; border:0; color:#fff; font-size:22px; cursor:pointer}
+.form .row{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.form input,.form textarea,.form select{
+  width:100%; padding:10px; border-radius:10px;
+  border:1px solid #283041; background:#0a0f16; color:#e7eefc;
+}
+.submit{background:var(--accent); color:#fff; border:0; border-radius:10px; padding:12px; font-weight:900; cursor:pointer; width:100%}
 
-/* Footer */
-.footer{padding:20px;text-align:center;opacity:.7}
+/* ========== FOOTER ========== */
+.footer{padding:20px; text-align:center; opacity:.7}
 
-/* Responsive */
-@media (max-width:980px){
+/* ========== SMALL RESPONSIVE NUDGE ========== */
+@media (max-width: 980px){
   .machine{grid-template-columns:1fr}
   .console{grid-template-rows:auto auto auto auto auto auto}
   .prize-case{grid-template-rows:repeat(4,160px)}
 }
 
-/* Hide any legacy total outside the cart box if it exists */
-.console > .total{display:none!important}
+/* hide any old total that might still be outside the box */
+.console > .total{ display:none !important; }
