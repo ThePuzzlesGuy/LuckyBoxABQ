@@ -1,4 +1,3 @@
-// ------------ DATA & STATE ------------
 let PRODUCTS = [];
 const cart = new Map();            // code -> { product, qty }
 let SELECTED_INDEX = 0;            // choice carousel index
@@ -15,6 +14,7 @@ async function init(){
   }
 
   if (PRODUCTS.length === 0) {
+    // Fail-safe placeholder so the UI still renders
     PRODUCTS = [{
       code: 'DEMO',
       name: 'Sample Item',
@@ -67,8 +67,10 @@ function buildChoiceCarousel(){
   const screen = document.getElementById('choice-screen');
   if (!screen) return;
 
+  // initial render
   renderChoice();
 
+  // nav
   document.getElementById('prev').addEventListener('click', () => {
     SELECTED_INDEX = (SELECTED_INDEX - 1 + PRODUCTS.length) % PRODUCTS.length;
     renderChoice();
@@ -78,6 +80,7 @@ function buildChoiceCarousel(){
     renderChoice();
   });
 
+  // tap to add
   screen.addEventListener('click', () => {
     const p = PRODUCTS[SELECTED_INDEX];
     addToCart(p.code, 1);
@@ -172,6 +175,7 @@ function renderTotal(){
   for (const [, item] of cart) t += item.product.price * item.qty;
   el.textContent = '$' + t.toFixed(2);
 
+  // payload for Netlify form
   const payload = Array.from(cart.values()).map(x => ({
     code: x.product.code,
     name: x.product.name,
