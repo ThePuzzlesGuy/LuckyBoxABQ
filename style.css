@@ -31,7 +31,7 @@ body{
   width:min(1200px,95vw);
   margin:20px auto 40px;
   display:grid;
-  grid-template-columns: 1.55fr .65fr .5fr;
+  grid-template-columns: 1.55fr .65fr .5fr; /* left / middle / right */
   gap:16px;
   background:var(--yellow);
   padding:18px;
@@ -82,7 +82,10 @@ body{
   display:grid;
   grid-template-rows:auto auto; /* screen, flap */
   gap:12px;
+  /* Move the whole middle column down a bit so the screen aligns with the flap */
+  padding-top: 14px;
 }
+
 .screen{
   --bar-h: 52px;
   height:260px;
@@ -96,49 +99,51 @@ body{
   overflow:hidden;
   box-shadow:inset 0 0 0 2px rgba(0,0,0,.5);
   cursor:pointer;
+  /* drop the screen slightly to match the mock alignment */
+  margin-top: 12px;
 }
 .screen .label{
   position:absolute; left:10px; right:10px; top:10px;
   color:#fff; font-weight:900; text-shadow:0 2px 6px rgba(0,0,0,.6);
 }
+
+/* Bottom bar: perfectly centered control group */
 .screen .screen-nav{
   position:absolute; left:0; right:0; bottom:0;
   height:var(--bar-h);
   background: linear-gradient(#e0542d, var(--accent));
   border-top: 4px solid var(--black);
-  display:grid;
-  grid-template-columns:64px 64px 64px;
-  justify-content:space-between;
+
+  display:flex;
   align-items:center;
-  gap:8px;
+  justify-content:center;   /* center as a group */
+  gap:12px;
   padding:0 10px;
   color:#fff;
 }
-.nav-btn{
+
+/* Make all three controls identical size so the middle looks visually centered */
+.nav-btn,
+.add-btn{
+  width:46px;
+  height:46px;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
   background:#10131a;
   border:2px solid #1d2230;
   color:#fff;
-  border-radius:10px;
-  width:64px; height:38px;
-  font-weight:900; font-size:18px;
-  cursor:pointer;
   box-shadow:0 2px 0 rgba(0,0,0,.4), inset 0 0 0 1px rgba(255,255,255,.05);
-}
-.nav-btn:active{ transform: translateY(1px); }
-
-.add-btn{
-  display:grid; place-items:center;
-  width:46px; height:46px;
-  border-radius:50%;
-  border:2px solid rgba(0,0,0,.6);
-  background: radial-gradient(120% 120% at 30% 25%, rgba(255,255,255,.35), rgba(255,255,255,0) 40%), #151823;
-  color:#fff;
-  box-shadow: 0 3px 0 rgba(0,0,0,.4), inset 0 0 0 1px rgba(255,255,255,.06);
   cursor:pointer;
-  transform: translateY(-3px);
 }
-.add-btn:hover{ filter:brightness(1.1); }
-.add-btn:active{ transform:translateY(-2px) scale(.98); }
+.nav-btn:active,
+.add-btn:active{ transform: translateY(1px); }
+
+/* Add button a bit more “pressable” */
+.add-btn{
+  border-radius:50%;
+  background: radial-gradient(120% 120% at 30% 25%, rgba(255,255,255,.35), rgba(255,255,255,0) 40%), #151823;
+}
 
 /* ========== CLAW-MACHINE DOOR FLAP ========== */
 .flap-slot{
