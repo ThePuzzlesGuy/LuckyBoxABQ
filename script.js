@@ -30,7 +30,7 @@ async function init(){
   // Flap -> open cart drawer
   document.getElementById('flap').addEventListener('click', () => {
     openDrawer('#cart-drawer');
-    renderCartList(); // make sure content is fresh
+    renderCartList(); // refresh
   });
 
   // Drawer close buttons
@@ -58,8 +58,9 @@ function renderGrid(list){
   list.slice(0, 9).forEach(p => {
     const card = document.createElement('article');
     card.className = 'card';
+    card.dataset.code = p.code;
     card.innerHTML = `
-      <div class="img" style="background-image:url('${p.image}')"></div>
+      <div class="img" style="background-image:url('${p.image}')" data-code="${p.code}"></div>
       <div class="meta">
         <div class="title">${escape(p.name)}</div>
         <div class="series">${escape(p.series || '')}</div>
@@ -92,6 +93,7 @@ function buildChoiceCarousel(){
   screen.addEventListener('click', () => {
     const p = PRODUCTS[SELECTED_INDEX];
     addToCart(p.code, 1);
+    flyToFlap(p); // <-- new feedback animation
   });
 }
 
@@ -101,6 +103,47 @@ function renderChoice(){
   if (!p || !screen) return;
   screen.style.backgroundImage = `url('${p.image}')`;
   screen.querySelector('.label').textContent = p.name;
+}
+
+/* ---------- VISUAL FEEDBACK: FLY FROM GRID -> FLAP ---------- */
+function flyToFlap(product){
+  const flap = document.getElementById('flap');
+  if (!flap) return;
+
+  // start element: try grid card image; fallback to choice screen
+  const startEl =
+    document.querySelector(`.card[data-code="${cssEscape(product.code)}"] .img`)
+    || document.getElementById('choice-screen');
+
+  const start = startEl.getBoundingClientRect();
+  const target = flap.getBoundingClientRect();
+
+  const startCx = start.left + start.width / 2;
+  const startCy = start.top + start.height / 2;
+  const endCx = target.left + target.width / 2;
+  const endCy = target.top + target.height * 0.35; // towards the upper face
+
+  const ghost = document.createElement('img');
+  ghost.className = 'fly-ghost';
+  ghost.src = product.image;
+  ghost.style.left = (startCx - 43) + 'px'; // center ~86px wide
+  ghost.style.top  = (startCy - 43) + 'px';
+  document.body.appendChild(ghost);
+
+  // flap peek
+  flap.classList.add('peek');
+  ghost.animate(
+    [
+      { transform: 'translate(0,0) scale(1) rotate(0deg)', offset: 0 },
+      // arc downward a bit then up toward flap
+      { transform: `translate(${(endCx-startCx)*0.5}px, ${Math.max(120, endCy-startCy)*0.6}px) scale(.9) rotate(6deg)`, offset: .45 },
+      { transform: `translate(${endCx-startCx}px, ${endCy-startCy}px) scale(.35) rotate(12deg)`, offset: 1 }
+    ],
+    { duration: 900, easing: 'cubic-bezier(.22,.99,.45,1)' }
+  ).onfinish = () => {
+    ghost.remove();
+    setTimeout(() => flap.classList.remove('peek'), 150);
+  };
 }
 
 /* ---------- CART LIST (drawer) ---------- */
@@ -219,3 +262,9 @@ function closeDrawer(sel){ document.querySelector(sel).classList.remove('open');
 
 /* ---------- utils ---------- */
 function escape(s){ return String(s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+
+/* Tiny CSS.escape polyfill for selectors using product codes */
+function cssEscape(id){
+  if (window.CSS && CSS.escape) return CSS.escape(id);
+  return String(id).replace(/[^a-zA-Z0-9_\-]/g, ch => '\\' + ch.charCodeAt(0).toString(16) + ' ');
+}
