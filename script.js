@@ -71,7 +71,7 @@ function renderGrid(list){
   });
 }
 
-/* ---------- SELECTION SCREEN (combined with arrows) ---------- */
+/* ---------- SELECTION SCREEN ---------- */
 function buildSelectionScreen(){
   const screen = document.getElementById('choice-screen');
   if (!screen) return;
@@ -79,9 +79,9 @@ function buildSelectionScreen(){
   // initial render
   renderChoice();
 
-  // internal nav buttons (in the bottom bar)
+  // nav buttons in the bar
   document.getElementById('nav-prev').addEventListener('click', (e) => {
-    e.stopPropagation(); // keep from adding to cart
+    e.stopPropagation();
     SELECTED_INDEX = (SELECTED_INDEX - 1 + PRODUCTS.length) % PRODUCTS.length;
     renderChoice();
   });
@@ -91,10 +91,17 @@ function buildSelectionScreen(){
     renderChoice();
   });
 
-  // tap the image area anywhere (except the bottom bar buttons) to add
+  // add button in the center
+  document.getElementById('add-btn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    const p = PRODUCTS[SELECTED_INDEX];
+    addToCart(p.code, 1);
+    flyToFlap(p);
+  });
+
+  // image click also adds (no text shown)
   screen.addEventListener('click', (e) => {
-    // ignore clicks originating from the bottom bar buttons
-    if (e.target.closest('.screen-nav')) return;
+    if (e.target.closest('.screen-nav')) return; // ignore button area
     const p = PRODUCTS[SELECTED_INDEX];
     addToCart(p.code, 1);
     flyToFlap(p);
@@ -114,7 +121,6 @@ function flyToFlap(product){
   const flap = document.getElementById('flap');
   if (!flap) return;
 
-  // start element: try grid card image; fallback to selection screen
   const startEl =
     document.querySelector(`.card[data-code="${cssEscape(product.code)}"] .img`)
     || document.getElementById('choice-screen');
@@ -125,7 +131,7 @@ function flyToFlap(product){
   const startCx = start.left + start.width / 2;
   const startCy = start.top + start.height / 2;
   const endCx = target.left + target.width / 2;
-  const endCy = target.top + target.height * 0.35; // upper face of the flap
+  const endCy = target.top + target.height * 0.35;
 
   const ghost = document.createElement('img');
   ghost.className = 'fly-ghost';
@@ -134,7 +140,6 @@ function flyToFlap(product){
   ghost.style.top  = (startCy - 43) + 'px';
   document.body.appendChild(ghost);
 
-  // flap peek while landing
   flap.classList.add('peek');
   ghost.animate(
     [
@@ -156,7 +161,7 @@ function renderCartList(){
 
   if (cart.size === 0){
     list.innerHTML = `<li class="cart-item" style="grid-template-columns:1fr;">
-      <div style="text-align:center; width:100%;">Cart is empty — add an item by tapping the big screen.</div>
+      <div style="text-align:center; width:100%;">Cart is empty.</div>
     </li>`;
     renderTotal();
     return;
