@@ -1,11 +1,11 @@
 /* ========== THEME ========== */
 :root{
-  --yellow:#ebbe2d;     /* machine body */
-  --accent:#d74824;     /* brand red (also used for the screen bar) */
+  --yellow:#ebbe2d;
+  --accent:#d74824;
   --accent-dark:#b23b1e;
-  --black:#000;         /* bezel/border */
-  --panel:#0f141b;      /* dark panels */
-  --btn:#2a2f39;        /* misc buttons */
+  --black:#000;
+  --panel:#0f141b;
+  --btn:#2a2f39;
   --text:#111;
 }
 
@@ -31,17 +31,14 @@ body{
   width:min(1200px,95vw);
   margin:20px auto 40px;
   display:grid;
-  grid-template-columns: 1.55fr .65fr .5fr; /* left / middle / right */
+  grid-template-columns: 1.55fr .65fr .5fr;
   gap:16px;
   background:var(--yellow);
   padding:18px;
   border-radius:18px;
-  box-shadow:
-    inset 0 0 0 3px var(--black),
-    0 12px 40px rgba(0,0,0,.25);
+  box-shadow: inset 0 0 0 3px var(--black), 0 12px 40px rgba(0,0,0,.25);
   position:relative;
 }
-/* feet */
 .machine::before,.machine::after{
   content:"";
   position:absolute; bottom:-12px;
@@ -83,11 +80,9 @@ body{
 /* ========== MIDDLE: COMBINED SELECTION SCREEN ========== */
 .console{
   display:grid;
-  grid-template-rows:auto auto auto; /* screen, hint, flap */
+  grid-template-rows:auto auto; /* screen, flap */
   gap:12px;
 }
-
-/* Screen frame */
 .screen{
   --bar-h: 52px;
   height:260px;
@@ -100,26 +95,23 @@ body{
   display:block;
   overflow:hidden;
   box-shadow:inset 0 0 0 2px rgba(0,0,0,.5);
-  cursor:pointer;               /* image area is tappable to add */
+  cursor:pointer;
 }
-
-/* Product label on image */
 .screen .label{
   position:absolute; left:10px; right:10px; top:10px;
   color:#fff; font-weight:900; text-shadow:0 2px 6px rgba(0,0,0,.6);
 }
-
-/* Bottom control bar that lives inside the screen */
 .screen .screen-nav{
   position:absolute; left:0; right:0; bottom:0;
   height:var(--bar-h);
   background: linear-gradient(#e0542d, var(--accent));
   border-top: 4px solid var(--black);
   display:grid;
-  grid-template-columns: 64px 1fr 64px;
+  grid-template-columns:64px 64px 64px;
+  justify-content:space-between;
   align-items:center;
   gap:8px;
-  padding:0 8px;
+  padding:0 10px;
   color:#fff;
 }
 .nav-btn{
@@ -127,17 +119,26 @@ body{
   border:2px solid #1d2230;
   color:#fff;
   border-radius:10px;
-  width:100%; height:38px;
+  width:64px; height:38px;
   font-weight:900; font-size:18px;
   cursor:pointer;
   box-shadow:0 2px 0 rgba(0,0,0,.4), inset 0 0 0 1px rgba(255,255,255,.05);
 }
 .nav-btn:active{ transform: translateY(1px); }
-.nav-hint{
-  text-align:center; font-size:12px; opacity:.9; user-select:none;
-}
 
-.hint{margin:0 2px; font-size:12px; color:#3b2b00}
+.add-btn{
+  display:grid; place-items:center;
+  width:46px; height:46px;
+  border-radius:50%;
+  border:2px solid rgba(0,0,0,.6);
+  background: radial-gradient(120% 120% at 30% 25%, rgba(255,255,255,.35), rgba(255,255,255,0) 40%), #151823;
+  color:#fff;
+  box-shadow: 0 3px 0 rgba(0,0,0,.4), inset 0 0 0 1px rgba(255,255,255,.06);
+  cursor:pointer;
+  transform: translateY(-3px);
+}
+.add-btn:hover{ filter:brightness(1.1); }
+.add-btn:active{ transform:translateY(-2px) scale(.98); }
 
 /* ========== CLAW-MACHINE DOOR FLAP ========== */
 .flap-slot{
@@ -195,7 +196,7 @@ body{
   100% { transform:translateY(-2px) rotateX(-4deg); }
 }
 
-/* ========== RIGHT: PRIZE CASE (4 shelves) ========== */
+/* ========== RIGHT: PRIZE CASE ========== */
 .prize-case{
   background:var(--yellow);
   border:8px solid var(--black);
@@ -208,7 +209,7 @@ body{
 .shelf{ background:var(--panel); border-radius:8px; display:grid; place-items:center; }
 .shelf img{max-width:90%;max-height:90%;object-fit:contain}
 
-/* ========== DRAWERS (Cart & Checkout) ========== */
+/* ========== DRAWERS ========== */
 .drawer{position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,.6); z-index:50}
 .drawer.open{display:grid}
 .sheet{ width:min(720px,92vw); background:#0f141b; color:#fff; border-radius:16px; padding:24px; position:relative; }
