@@ -60,11 +60,11 @@ function renderGrid(list){
     card.className = 'card';
     card.dataset.code = p.code;
     card.innerHTML = `
-      <div class="img" style="background-image:url('${p.image}')" data-code="\${p.code}"></div>
+      <div class="img" style="background-image:url('${p.image}')" data-code="${p.code}"></div>
       <div class="meta">
-        <div class="title">\${escape(p.name)}</div>
-        <div class="series">\${escape(p.series || '')}</div>
-        <div class="row"><div class="price">$${'${p.price.toFixed(2)}'}</div><div></div></div>
+        <div class="title">${escape(p.name)}</div>
+        <div class="series">${escape(p.series || '')}</div>
+        <div class="row"><div class="price">$${p.price.toFixed(2)}</div><div></div></div>
       </div>
     `;
     grid.appendChild(card);
@@ -122,7 +122,7 @@ function flyToFlap(product){
   if (!flap) return;
 
   const startEl =
-    document.querySelector(\`.card[data-code="\${cssEscape(product.code)}"] .img\`)
+    document.querySelector(`.card[data-code="${cssEscape(product.code)}"] .img`)
     || document.getElementById('choice-screen');
 
   const start = startEl.getBoundingClientRect();
@@ -171,16 +171,16 @@ function renderCartList(){
     const li = document.createElement('li');
     li.className = 'cart-item';
     li.innerHTML = `
-      <img src="\${item.product.image}" alt="">
+      <img src="${item.product.image}" alt="">
       <div>
-        <div class="cart-name">\${escape(item.product.name)}</div>
-        <div class="cart-series">\${escape(item.product.series || '')}</div>
+        <div class="cart-name">${escape(item.product.name)}</div>
+        <div class="cart-series">${escape(item.product.series || '')}</div>
       </div>
       <div style="display:grid; gap:8px; justify-items:end;">
-        <div class="cart-price">$${'${item.product.price.toFixed(2)}'}</div>
+        <div class="cart-price">$${item.product.price.toFixed(2)}</div>
         <div class="cart-qty">
           <button class="minus" aria-label="Minus">−</button>
-          <span class="qty">\${item.qty}</span>
+          <span class="qty">${item.qty}</span>
           <button class="plus" aria-label="Plus">＋</button>
         </div>
         <button class="remove btn ghost" style="padding:6px 10px">Remove</button>
